@@ -94,7 +94,7 @@ export const Album = () => {
       <h2 id="album-heading" data-cy="AlbumHeading">
         <Translate contentKey="gallerySystemApp.album.home.title">Albums</Translate>
         <div className="d-flex justify-content-end">
-          <Button tag={Link} to="/album" className="me-2" color="success">
+          <Button tag={Link} to="/album/gallery" className="me-2" color="success">
             <FontAwesomeIcon icon={faImages} className="me-1" />
             Gallery View
           </Button>
