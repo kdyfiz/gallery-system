@@ -1,0 +1,20 @@
+entity Album {
+  name String required minlength(3) maxlength(255),           // Album name
+  event String maxlength(255),                                // Optional event name
+  creationDate Instant required,                              // Album creation date
+  overrideDate Instant,                                       // Optional override for sorting
+  thumbnail ImageBlob                                         // Album cover image
+}
+
+enum AlbumSort {
+  EVENT,
+  DATE
+}
+
+relationship ManyToOne {
+  Album{user(login)} to User with builtInEntity                // Album owner/creator
+}
+
+paginate Album with pagination
+service Album with serviceClass
+dto Album with mapstruct

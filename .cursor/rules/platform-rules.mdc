@@ -1,0 +1,56 @@
+```json
+{
+  "name": "Gallery Album Viewer",
+  "description": "Guides the AI to understand and generate code for a gallery album viewer, allowing users to view albums organized by event or date, with a focus on user-friendliness and performance.",
+  "triggers": [
+    {
+      "type": "file_extension",
+      "values": [".js", ".jsx", ".ts", ".tsx", ".py", ".java", ".html", ".css", ".sql"]
+    },
+    {
+      "type": "file_content",
+      "contains": ["gallery", "album", "photo", "event", "date", "thumbnail", "sort", "organize", "miscellaneous", "uncategorized"]
+    },
+    {
+      "type": "prompt_content",
+      "contains": ["view gallery albums", "organize albums by event", "organize albums by date", "album sorting", "thumbnail display", "event categorization"]
+    }
+  ],
+  "actions": [
+    {
+      "type": "set_context",
+      "context": {
+        "domain": "Gallery Album Management",
+        "purpose": "Allowing users to view and browse gallery albums organized by event or date.",
+        "features": [
+          "Album Listing",
+          "Sorting by Event Name",
+          "Sorting by Date",
+          "Thumbnail Display",
+          "Event Categorization (including 'Miscellaneous/Uncategorized')",
+          "Date Override (Admin)",
+          "Responsive Design",
+          "Accessibility Compliance"
+        ],
+        "target_audience": "End-users browsing photo galleries.",
+        "ui_ux_guidelines": {
+          "design_system": "Use a clean and modern design system (e.g., Material Design, Bootstrap) that is visually appealing and easy to navigate.",
+          "responsiveness": "Ensure the UI is fully responsive across different devices (desktops, tablets, mobile phones).",
+          "interactivity": "Provide clear visual feedback when the user interacts with the sorting options (e.g., highlighting the selected option).",
+          "data_visualization": "N/A (primarily focused on image display, not data visualization)",
+          "accessibility": "Follow accessibility guidelines (WCAG) to ensure the platform is usable by people with disabilities. Use appropriate ARIA attributes for interactive elements.",
+          "user_flow": "Design an intuitive user flow where the user can easily switch between event and date views and browse albums.",
+          "performance": "Optimize image loading and rendering for fast loading times. Implement pagination or lazy loading for large album collections.",
+          "feedback": "Provide loading indicators while albums are being retrieved and displayed.",
+          "consistency": "Maintain consistent styling and behavior across all album tiles and sorting options.",
+          "modern_aesthetics": "Utilize a visually appealing color palette and modern UI patterns for a pleasant browsing experience."
+        }
+      }
+    },
+    {
+      "type": "add_instruction",
+      "instruction": "When generating UI code or suggestions, prioritize responsiveness, accessibility, and a modern aesthetic. Ensure the UI allows users to easily switch between event and date views. Optimize image loading for performance. When generating backend code, focus on efficient data retrieval and sorting based on user selection. Handle cases where albums have no event name gracefully."
+    }
+  ]
+}
+```
