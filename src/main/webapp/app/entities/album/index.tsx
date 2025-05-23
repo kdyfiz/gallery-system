@@ -11,9 +11,9 @@ import AlbumDeleteDialog from './album-delete-dialog';
 
 const AlbumRoutes = () => (
   <ErrorBoundaryRoutes>
-    <Route index element={<AlbumGallery />} />
-    <Route path="list" element={<Album />} />
+    <Route index element={<Album />} />
     <Route path="gallery" element={<AlbumGallery />} />
+    <Route path="list" element={<Album />} />
     <Route path="new" element={<AlbumUpdate />} />
     <Route path=":id">
       <Route index element={<AlbumDetail />} />

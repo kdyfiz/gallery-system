@@ -148,7 +148,7 @@ export const AlbumGallery = () => {
             ) : album.creationDate ? (
               <TextFormat type="date" value={album.creationDate} format={APP_DATE_FORMAT} />
             ) : (
-              'No date'
+              <>No date</>
             )}
           </CardText>
           {album.user && <CardText className="album-owner text-muted small">Created by: {album.user.login}</CardText>}
