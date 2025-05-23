@@ -1,3 +1,6 @@
+# what' done ?
+- i already run jhipster and jhipster jdl only
+
 # need to run
 - start from jhipster ci-cd and the rest
   
