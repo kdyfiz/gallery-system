@@ -1,3 +1,9 @@
+#update 3 
+- done run jdl
+- done run ci-cd
+- done update gherkin file
+- success in testing
+
 # gallerySystem
 
 This application was generated using JHipster 8.10.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.10.0](https://www.jhipster.tech/documentation-archive/v8.10.0).
