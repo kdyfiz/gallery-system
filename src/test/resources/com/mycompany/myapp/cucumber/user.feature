@@ -106,12 +106,4 @@ Feature: User Management
       | Travel Pics    | Europe Trip    |
     When I search for user "photographer"
     Then the user should be found
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     And the user should be associated with their albums
-=======
-    And the user should be associated with their albums
->>>>>>> Stashed changes
-=======
-    And the user should be associated with their albums
->>>>>>> Stashed changes
