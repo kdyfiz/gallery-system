@@ -11,11 +11,16 @@ import {
 } from '../../support/entity';
 
 describe('Album e2e test', () => {
-  const albumPageUrl = '/album';
-  const albumPageUrlPattern = new RegExp('/album(\\?.*)?$');
+  const albumPageUrl = '/album/list';
+  const albumGalleryUrl = '/album';
+  const albumPageUrlPattern = new RegExp('/album/(list)?(\\?.*)?$');
   const username = Cypress.env('E2E_USERNAME') ?? 'user';
   const password = Cypress.env('E2E_PASSWORD') ?? 'user';
-  const albumSample = { name: 'remark finally quizzically', creationDate: '2025-05-22T08:10:04.279Z' };
+  const albumSample = {
+    name: 'Test Album for E2E',
+    creationDate: '2025-01-23T10:00:00.000Z',
+    event: 'Test Event',
+  };
 
   let album;
 
@@ -25,6 +30,7 @@ describe('Album e2e test', () => {
 
   beforeEach(() => {
     cy.intercept('GET', '/api/albums+(?*|)').as('entitiesRequest');
+    cy.intercept('GET', '/api/albums/gallery+(?*|)').as('galleryRequest');
     cy.intercept('POST', '/api/albums').as('postEntityRequest');
     cy.intercept('DELETE', '/api/albums/*').as('deleteEntityRequest');
   });
@@ -40,21 +46,17 @@ describe('Album e2e test', () => {
     }
   });
 
-  it('Albums menu should load Albums page', () => {
+  it('Albums menu should load Albums gallery page', () => {
     cy.visit('/');
     cy.clickOnEntityMenuItem('album');
-    cy.wait('@entitiesRequest').then(({ response }) => {
-      if (response?.body.length === 0) {
-        cy.get(entityTableSelector).should('not.exist');
-      } else {
-        cy.get(entityTableSelector).should('exist');
-      }
+    cy.wait('@galleryRequest').then(({ response }) => {
+      expect(response?.statusCode).to.equal(200);
     });
-    cy.getEntityHeading('Album').should('exist');
-    cy.url().should('match', albumPageUrlPattern);
+    cy.url().should('match', new RegExp('/album(\\?.*)?$'));
+    cy.contains('Photo Gallery').should('exist');
   });
 
-  describe('Album page', () => {
+  describe('Album list page', () => {
     describe('create button click', () => {
       beforeEach(() => {
         cy.visit(albumPageUrl);
@@ -100,7 +102,6 @@ describe('Album e2e test', () => {
         });
 
         cy.visit(albumPageUrl);
-
         cy.wait('@entitiesRequestInternal');
       });
 
@@ -154,32 +155,75 @@ describe('Album e2e test', () => {
     });
   });
 
+  describe('Album gallery view', () => {
+    beforeEach(() => {
+      cy.authenticatedRequest({
+        method: 'POST',
+        url: '/api/albums',
+        body: albumSample,
+      }).then(({ body }) => {
+        album = body;
+      });
+    });
+
+    it('should display albums in gallery format', () => {
+      cy.visit(albumGalleryUrl);
+      cy.wait('@galleryRequest');
+      cy.contains('Photo Gallery').should('exist');
+      cy.get('[data-cy="gallery-content"]').should('exist');
+    });
+
+    it('should allow switching between event and date sorting', () => {
+      cy.visit(albumGalleryUrl);
+      cy.wait('@galleryRequest');
+
+      cy.get('[data-cy="sort-by-event"]').click();
+      cy.wait('@galleryRequest');
+
+      cy.get('[data-cy="sort-by-date"]').click();
+      cy.wait('@galleryRequest');
+    });
+
+    it('should display create album button', () => {
+      cy.visit(albumGalleryUrl);
+      cy.wait('@galleryRequest');
+      cy.get('a[href="/album/new"]').should('exist').and('contain', 'Create Album');
+    });
+
+    it('should navigate to list view', () => {
+      cy.visit(albumGalleryUrl);
+      cy.wait('@galleryRequest');
+      cy.get('a[href="/album/list"]').should('exist').and('contain', 'Back to List');
+      cy.get('a[href="/album/list"]').click();
+      cy.url().should('include', '/album/list');
+    });
+  });
+
   describe('new Album page', () => {
     beforeEach(() => {
-      cy.visit(`${albumPageUrl}`);
+      cy.visit(albumPageUrl);
       cy.get(entityCreateButtonSelector).click();
       cy.getEntityCreateUpdateHeading('Album');
     });
 
-    it('should create an instance of Album', () => {
-      cy.get(`[data-cy="name"]`).type('vainly');
-      cy.get(`[data-cy="name"]`).should('have.value', 'vainly');
+    it('should create an instance of Album with all fields', () => {
+      cy.get(`[data-cy="name"]`).type('Comprehensive Test Album');
+      cy.get(`[data-cy="name"]`).should('have.value', 'Comprehensive Test Album');
 
-      cy.get(`[data-cy="event"]`).type('curry blah afford');
-      cy.get(`[data-cy="event"]`).should('have.value', 'curry blah afford');
+      cy.get(`[data-cy="event"]`).type('Test Event 2025');
+      cy.get(`[data-cy="event"]`).should('have.value', 'Test Event 2025');
 
-      cy.get(`[data-cy="creationDate"]`).type('2025-05-23T00:45');
+      cy.get(`[data-cy="creationDate"]`).type('2025-01-23T10:30');
       cy.get(`[data-cy="creationDate"]`).blur();
-      cy.get(`[data-cy="creationDate"]`).should('have.value', '2025-05-23T00:45');
+      cy.get(`[data-cy="creationDate"]`).should('have.value', '2025-01-23T10:30');
 
-      cy.get(`[data-cy="overrideDate"]`).type('2025-05-22T07:32');
+      cy.get(`[data-cy="overrideDate"]`).type('2025-01-24T11:00');
       cy.get(`[data-cy="overrideDate"]`).blur();
-      cy.get(`[data-cy="overrideDate"]`).should('have.value', '2025-05-22T07:32');
+      cy.get(`[data-cy="overrideDate"]`).should('have.value', '2025-01-24T11:00');
 
       cy.setFieldImageAsBytesOfEntity('thumbnail', 'integration-test.png', 'image/png');
 
-      // since cypress clicks submit too fast before the blob fields are validated
-      cy.wait(200); // eslint-disable-line cypress/no-unnecessary-waiting
+      cy.wait(200);
       cy.get(entityCreateSaveButtonSelector).click();
 
       cy.wait('@postEntityRequest').then(({ response }) => {
@@ -190,6 +234,20 @@ describe('Album e2e test', () => {
         expect(response?.statusCode).to.equal(200);
       });
       cy.url().should('match', albumPageUrlPattern);
+    });
+
+    it('should validate required fields', () => {
+      cy.get(entityCreateSaveButtonSelector).click();
+
+      cy.get(`[data-cy="name"]`).should('have.class', 'is-invalid');
+    });
+
+    it('should validate name length constraints', () => {
+      cy.get(`[data-cy="name"]`).type('AB');
+      cy.get(`[data-cy="creationDate"]`).type('2025-01-23T10:30');
+      cy.get(entityCreateSaveButtonSelector).click();
+
+      cy.get(`[data-cy="name"]`).should('have.class', 'is-invalid');
     });
   });
 });

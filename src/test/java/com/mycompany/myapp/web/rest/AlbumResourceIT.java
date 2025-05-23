@@ -4,6 +4,7 @@ import static com.mycompany.myapp.domain.AlbumAsserts.*;
 import static com.mycompany.myapp.web.rest.TestUtil.createUpdateProxyForBean;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -11,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Album;
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.AlbumRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.service.AlbumService;
@@ -21,6 +23,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
@@ -47,11 +50,13 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class AlbumResourceIT {
 
-    private static final String DEFAULT_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_NAME = "Test Album";
+    private static final String UPDATED_NAME = "Updated Album";
+    private static final String INVALID_SHORT_NAME = "AB"; // Less than 3 chars
+    private static final String INVALID_LONG_NAME = "A".repeat(256); // More than 255 chars
 
-    private static final String DEFAULT_EVENT = "AAAAAAAAAA";
-    private static final String UPDATED_EVENT = "BBBBBBBBBB";
+    private static final String DEFAULT_EVENT = "Wedding";
+    private static final String UPDATED_EVENT = "Birthday Party";
 
     private static final Instant DEFAULT_CREATION_DATE = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_CREATION_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
@@ -66,6 +71,7 @@ class AlbumResourceIT {
 
     private static final String ENTITY_API_URL = "/api/albums";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
+    private static final String ENTITY_GALLERY_API_URL = "/api/albums/gallery";
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
@@ -95,14 +101,11 @@ class AlbumResourceIT {
     private MockMvc restAlbumMockMvc;
 
     private Album album;
-
     private Album insertedAlbum;
+    private User testUser;
 
     /**
      * Create an entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
      */
     public static Album createEntity() {
         return new Album()
@@ -116,9 +119,6 @@ class AlbumResourceIT {
 
     /**
      * Create an updated entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
      */
     public static Album createUpdatedEntity() {
         return new Album()
@@ -133,6 +133,14 @@ class AlbumResourceIT {
     @BeforeEach
     void initTest() {
         album = createEntity();
+        // Create test user
+        testUser = new User();
+        testUser.setLogin("testuser");
+        testUser.setFirstName("Test");
+        testUser.setLastName("User");
+        testUser.setEmail("test@example.com");
+        testUser.setActivated(true);
+        testUser = userRepository.saveAndFlush(testUser);
     }
 
     @AfterEach
@@ -141,12 +149,16 @@ class AlbumResourceIT {
             albumRepository.delete(insertedAlbum);
             insertedAlbum = null;
         }
+        if (testUser != null && testUser.getId() != null) {
+            userRepository.delete(testUser);
+        }
     }
 
     @Test
     @Transactional
     void createAlbum() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
+
         // Create the Album
         AlbumDTO albumDTO = albumMapper.toDto(album);
         var returnedAlbumDTO = om.readValue(
@@ -163,6 +175,35 @@ class AlbumResourceIT {
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
         var returnedAlbum = albumMapper.toEntity(returnedAlbumDTO);
         assertAlbumUpdatableFieldsEquals(returnedAlbum, getPersistedAlbum(returnedAlbum));
+
+        insertedAlbum = returnedAlbum;
+    }
+
+    @Test
+    @Transactional
+    void createAlbumWithMinimalData() throws Exception {
+        long databaseSizeBeforeCreate = getRepositoryCount();
+
+        // Create album with only required fields
+        Album minimalAlbum = new Album().name("Minimal Album").creationDate(Instant.now());
+
+        AlbumDTO albumDTO = albumMapper.toDto(minimalAlbum);
+
+        var returnedAlbumDTO = om.readValue(
+            restAlbumMockMvc
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(albumDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            AlbumDTO.class
+        );
+
+        assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedAlbum = albumMapper.toEntity(returnedAlbumDTO);
+        assertThat(returnedAlbum.getName()).isEqualTo("Minimal Album");
+        assertThat(returnedAlbum.getEvent()).isNull();
+        assertThat(returnedAlbum.getThumbnail()).isNull();
 
         insertedAlbum = returnedAlbum;
     }
@@ -193,6 +234,36 @@ class AlbumResourceIT {
         album.setName(null);
 
         // Create the Album, which fails.
+        AlbumDTO albumDTO = albumMapper.toDto(album);
+
+        restAlbumMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(albumDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    void checkNameMinLengthValidation() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+
+        album.setName(INVALID_SHORT_NAME);
+        AlbumDTO albumDTO = albumMapper.toDto(album);
+
+        restAlbumMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(albumDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    void checkNameMaxLengthValidation() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+
+        album.setName(INVALID_LONG_NAME);
         AlbumDTO albumDTO = albumMapper.toDto(album);
 
         restAlbumMockMvc
@@ -237,6 +308,78 @@ class AlbumResourceIT {
             .andExpect(jsonPath("$.[*].overrideDate").value(hasItem(DEFAULT_OVERRIDE_DATE.toString())))
             .andExpect(jsonPath("$.[*].thumbnailContentType").value(hasItem(DEFAULT_THUMBNAIL_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].thumbnail").value(hasItem(Base64.getEncoder().encodeToString(DEFAULT_THUMBNAIL))));
+    }
+
+    @Test
+    @Transactional
+    void getAlbumsForGalleryByEvent() throws Exception {
+        // Create test albums with different events
+        Album album1 = new Album().name("Wedding Album 1").event("Wedding").creationDate(Instant.now());
+        Album album2 = new Album().name("Wedding Album 2").event("Wedding").creationDate(Instant.now());
+        Album album3 = new Album().name("Birthday Album").event("Birthday").creationDate(Instant.now());
+        Album album4 = new Album().name("Random Album").creationDate(Instant.now()); // No event
+
+        albumRepository.saveAndFlush(album1);
+        albumRepository.saveAndFlush(album2);
+        albumRepository.saveAndFlush(album3);
+        albumRepository.saveAndFlush(album4);
+
+        // Get gallery view sorted by event
+        restAlbumMockMvc
+            .perform(get(ENTITY_GALLERY_API_URL + "?sortBy=EVENT"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$", hasSize(4))); // Should return all albums
+    }
+
+    @Test
+    @Transactional
+    void getAlbumsForGalleryByDate() throws Exception {
+        Instant now = Instant.now();
+
+        // Create test albums with different dates
+        Album album1 = new Album().name("Oldest Album").creationDate(now.minus(30, ChronoUnit.DAYS));
+        Album album2 = new Album().name("Recent Album").creationDate(now.minus(1, ChronoUnit.DAYS));
+        Album album3 = new Album().name("Override Date Album").creationDate(now.minus(10, ChronoUnit.DAYS)).overrideDate(now); // Should be sorted by override date
+
+        albumRepository.saveAndFlush(album1);
+        albumRepository.saveAndFlush(album2);
+        albumRepository.saveAndFlush(album3);
+
+        // Get gallery view sorted by date
+        restAlbumMockMvc
+            .perform(get(ENTITY_GALLERY_API_URL + "?sortBy=DATE"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$", hasSize(3)));
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = "user1")
+    void getUserSpecificAlbums() throws Exception {
+        // Create user-specific albums
+        User user1 = new User();
+        user1.setLogin("user1");
+        user1 = userRepository.saveAndFlush(user1);
+
+        User user2 = new User();
+        user2.setLogin("user2");
+        user2 = userRepository.saveAndFlush(user2);
+
+        Album album1 = new Album().name("User1 Album").creationDate(Instant.now()).user(user1);
+        Album album2 = new Album().name("User2 Album").creationDate(Instant.now()).user(user2);
+
+        albumRepository.saveAndFlush(album1);
+        albumRepository.saveAndFlush(album2);
+
+        // Should only return user1's albums
+        restAlbumMockMvc
+            .perform(get(ENTITY_API_URL))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$[*].name").value(hasItem("User1 Album")))
+            .andExpect(jsonPath("$[*].name").value(not(hasItem("User2 Album"))));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -401,7 +544,6 @@ class AlbumResourceIT {
             .andExpect(status().isOk());
 
         // Validate the Album in the database
-
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
         assertAlbumUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedAlbum, album), getPersistedAlbum(album));
     }
@@ -435,7 +577,6 @@ class AlbumResourceIT {
             .andExpect(status().isOk());
 
         // Validate the Album in the database
-
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
         assertAlbumUpdatableFieldsEquals(partialUpdatedAlbum, getPersistedAlbum(partialUpdatedAlbum));
     }
