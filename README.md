@@ -1,3 +1,7 @@
+# what's done ?
+- already done run jhipster ci-cd and the promp
+- -but need to run promp to update gherkin file user.feature
+- 
 # gallerySystem
 
 This application was generated using JHipster 8.10.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.10.0](https://www.jhipster.tech/documentation-archive/v8.10.0).
