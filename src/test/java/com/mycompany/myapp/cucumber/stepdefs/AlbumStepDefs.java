@@ -372,7 +372,7 @@ public class AlbumStepDefs extends StepDefs {
 
     @Then("each group should be sorted alphabetically by name")
     public void each_group_should_be_sorted_alphabetically_by_name() throws Exception {
-        actions.andExpected(status().isOk());
+        actions.andExpect(status().isOk());
         // This would require custom verification logic to check sorting
     }
 
