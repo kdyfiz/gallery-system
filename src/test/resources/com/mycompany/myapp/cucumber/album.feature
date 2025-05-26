@@ -142,3 +142,4 @@ Feature: Photo Album Management
     Then the album should appear in my gallery
     And the album should be properly categorized under "Testing Event"
     And the thumbnail should be displayed correctly 
+    
