@@ -165,10 +165,10 @@ public class AlbumGatlingTest extends Simulation {
             adminUserScenario.injectOpen(
                 rampUsers(Integer.getInteger("adminUsers", 10)).during(Duration.ofMinutes(Integer.getInteger("rampDuration", 2)))
             ),
-            // High load scenario
-            highLoadScenario
-                .injectOpen(rampUsers(Integer.getInteger("highLoadUsers", 20)).during(Duration.ofSeconds(30)))
-                .andThen(constantUsersPerSec(5).during(Duration.ofSeconds(60))),
+            // High load scenario - initial ramp
+            highLoadScenario.injectOpen(rampUsers(Integer.getInteger("highLoadUsers", 20)).during(Duration.ofSeconds(30))),
+            // High load scenario - constant rate
+            highLoadScenario.injectOpen(constantUsersPerSec(5).during(Duration.ofSeconds(60))),
             // Large dataset test
             largeDatasetScenario.injectOpen(rampUsers(5).during(Duration.ofSeconds(10)))
         )

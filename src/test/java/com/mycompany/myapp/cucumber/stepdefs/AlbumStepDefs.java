@@ -306,7 +306,7 @@ public class AlbumStepDefs extends StepDefs {
 
     @Then("I should see {string}")
     public void i_should_see(String albumName) throws Exception {
-        actions.andExpected(status().isOk()).andExpect(jsonPath("$[?(@.name == '" + albumName + "')]").exists());
+        actions.andExpect(status().isOk()).andExpect(jsonPath("$[?(@.name == '" + albumName + "')]").exists());
     }
 
     @Then("I should not see {string}")
@@ -316,7 +316,7 @@ public class AlbumStepDefs extends StepDefs {
 
     @Then("I should see an empty gallery message")
     public void i_should_see_an_empty_gallery_message() throws Exception {
-        actions.andExpect(status().isOk()).andExpected(jsonPath("$").isEmpty());
+        actions.andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
     }
 
     @Then("the response should be returned within {int} seconds")
