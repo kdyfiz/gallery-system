@@ -201,7 +201,7 @@ public class CommonStepDefs extends StepDefs {
     }
 
     @Then("the system should be accessible")
-    public void the_system_should_be_accessible() {
+    public void the_system_should_be_accessible() throws Exception {
         // Verify WCAG accessibility compliance
         actions.andExpect(status().isOk());
     }
