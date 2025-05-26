@@ -3,6 +3,9 @@
 - done run ci-cd
 - done update gherkin file
 - success in testing
+- done run prompt to update test case in src/test
+- done update performance testing in ci
+- can run ./mvnw gatling:test - to open gatling file .html
 
 # gallerySystem
 
