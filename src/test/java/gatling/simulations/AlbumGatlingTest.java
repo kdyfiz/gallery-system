@@ -88,11 +88,29 @@ public class AlbumGatlingTest extends Simulation {
                 .pause(10)
         );
 
+    ChainBuilder sortByEvent = exec(
+        http("Get albums sorted by event").get("/api/albums/gallery?sortBy=EVENT").headers(headersHttpAuthenticated).check(status().is(200))
+    ).pause(Duration.ofSeconds(1));
+
+    ChainBuilder sortByDate = exec(
+        http("Get albums sorted by date").get("/api/albums/gallery?sortBy=DATE").headers(headersHttpAuthenticated).check(status().is(200))
+    ).pause(Duration.ofSeconds(1));
+
+    ChainBuilder invalidSort = exec(
+        http("Get albums with invalid sort")
+            .get("/api/albums/gallery?sortBy=INVALID")
+            .headers(headersHttpAuthenticated)
+            .check(status().is(400))
+    ).pause(Duration.ofSeconds(1));
+
+    ScenarioBuilder sortingScenario = scenario("Test album sorting").exec(sortByEvent).exec(sortByDate).exec(invalidSort);
+
     ScenarioBuilder users = scenario("Test the Album entity").exec(scn);
 
     {
         setUp(
-            users.injectOpen(rampUsers(Integer.getInteger("users", 100)).during(Duration.ofMinutes(Integer.getInteger("ramp", 1))))
+            users.injectOpen(rampUsers(Integer.getInteger("users", 100)).during(Duration.ofMinutes(Integer.getInteger("ramp", 1)))),
+            sortingScenario.injectOpen(rampUsers(50).during(Duration.ofSeconds(30)))
         ).protocols(httpConf);
     }
 }
