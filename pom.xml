@@ -404,6 +404,17 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
+                <version>4.6.0</version>
+                <configuration>
+                    <simulationClass>gatling.simulations.AlbumGatlingTest</simulationClass>
+                    <jvmArgs>
+                        <jvmArg>-Xms512M</jvmArg>
+                        <jvmArg>-Xmx2G</jvmArg>
+                    </jvmArgs>
+                    <includes>
+                        <include>**/AlbumGatlingTest.java</include>
+                    </includes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
