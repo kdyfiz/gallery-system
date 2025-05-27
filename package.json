@@ -28,7 +28,7 @@
     "ci:e2e:teardown": "npm run ci:e2e:teardown:docker --if-present",
     "ci:e2e:teardown:docker": "docker compose -f src/main/docker/services.yml down -v && docker ps -a",
     "ci:frontend:test": "npm run webapp:build:$npm_package_config_default_environment && npm run test-ci",
-    "ci:performance:test": "npm run backend:performance:test",
+    "ci:performance:test": "./mvnw gatling:test -ntp --batch-mode",
     "ci:server:await": "echo \"Waiting for server at port $npm_package_config_backend_port to start\" && wait-on -t 180000 http-get://127.0.0.1:$npm_package_config_backend_port/management/health && echo \"Server at port $npm_package_config_backend_port started\"",
     "clean-www": "rimraf target/classes/static/",
     "cleanup": "rimraf target/",
