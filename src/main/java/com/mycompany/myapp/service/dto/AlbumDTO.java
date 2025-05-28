@@ -4,7 +4,9 @@ import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A DTO for the {@link com.mycompany.myapp.domain.Album} entity.
@@ -32,6 +34,8 @@ public class AlbumDTO implements Serializable {
     private String thumbnailContentType;
 
     private UserDTO user;
+
+    private Set<TagDTO> tags = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -97,6 +101,14 @@ public class AlbumDTO implements Serializable {
         this.user = user;
     }
 
+    public Set<TagDTO> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<TagDTO> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -129,6 +141,7 @@ public class AlbumDTO implements Serializable {
             ", overrideDate='" + getOverrideDate() + "'" +
             ", thumbnail='" + getThumbnail() + "'" +
             ", user=" + getUser() +
+            ", tags=" + getTags() +
             "}";
     }
 }

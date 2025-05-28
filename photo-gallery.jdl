@@ -6,15 +6,36 @@ entity Album {
   thumbnail ImageBlob                                         // Album cover image
 }
 
+entity Tag {
+  name String required unique                                 // Tag name
+}
+
 enum AlbumSort {
   EVENT,
   DATE
 }
 
 relationship ManyToOne {
-  Album{user(login)} to User with builtInEntity                // Album owner/creator
+  Album{user(login)} to User with builtInEntity               // Album owner/creator
+}
+
+relationship ManyToMany {
+  Album{tags(name)} to Tag{albums}                            // Albums can have multiple tags
 }
 
 paginate Album with pagination
 service Album with serviceClass
 dto Album with mapstruct
+
+paginate Tag with pagination
+service Tag with serviceClass
+dto Tag with mapstruct
+
+
+// what new from USER STORY update ?
+// ✅ Added Tag entity: to enable filtering albums by tags.
+// ✅ Added ManyToMany relationship between Album and Tag: to support tagging multiple albums.
+// ✅ Existing event field reused for sorting/filtering by event.
+// ✅ Existing creationDate field reused for filtering by year.
+// ✅ Existing user relationship reused for filtering by contributor.
+// ✅ Added inline comments for clarity.

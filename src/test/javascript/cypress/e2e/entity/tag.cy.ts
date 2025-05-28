@@ -10,39 +10,39 @@ import {
   entityTableSelector,
 } from '../../support/entity';
 
-describe('Album e2e test', () => {
-  const albumPageUrl = '/album';
-  const albumPageUrlPattern = new RegExp('/album(\\?.*)?$');
+describe('Tag e2e test', () => {
+  const tagPageUrl = '/tag';
+  const tagPageUrlPattern = new RegExp('/tag(\\?.*)?$');
   const username = Cypress.env('E2E_USERNAME') ?? 'user';
   const password = Cypress.env('E2E_PASSWORD') ?? 'user';
-  const albumSample = { name: 'yet provided mmm', creationDate: '2025-05-22T10:08:13.751Z' };
+  const tagSample = { name: 'black-and-white' };
 
-  let album;
+  let tag;
 
   beforeEach(() => {
     cy.login(username, password);
   });
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/albums+(?*|)').as('entitiesRequest');
-    cy.intercept('POST', '/api/albums').as('postEntityRequest');
-    cy.intercept('DELETE', '/api/albums/*').as('deleteEntityRequest');
+    cy.intercept('GET', '/api/tags+(?*|)').as('entitiesRequest');
+    cy.intercept('POST', '/api/tags').as('postEntityRequest');
+    cy.intercept('DELETE', '/api/tags/*').as('deleteEntityRequest');
   });
 
   afterEach(() => {
-    if (album) {
+    if (tag) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/albums/${album.id}`,
+        url: `/api/tags/${tag.id}`,
       }).then(() => {
-        album = undefined;
+        tag = undefined;
       });
     }
   });
 
-  it('Albums menu should load Albums page', () => {
+  it('Tags menu should load Tags page', () => {
     cy.visit('/');
-    cy.clickOnEntityMenuItem('album');
+    cy.clickOnEntityMenuItem('tag');
     cy.wait('@entitiesRequest').then(({ response }) => {
       if (response?.body.length === 0) {
         cy.get(entityTableSelector).should('not.exist');
@@ -50,27 +50,27 @@ describe('Album e2e test', () => {
         cy.get(entityTableSelector).should('exist');
       }
     });
-    cy.getEntityHeading('Album').should('exist');
-    cy.url().should('match', albumPageUrlPattern);
+    cy.getEntityHeading('Tag').should('exist');
+    cy.url().should('match', tagPageUrlPattern);
   });
 
-  describe('Album page', () => {
+  describe('Tag page', () => {
     describe('create button click', () => {
       beforeEach(() => {
-        cy.visit(albumPageUrl);
+        cy.visit(tagPageUrl);
         cy.wait('@entitiesRequest');
       });
 
-      it('should load create Album page', () => {
+      it('should load create Tag page', () => {
         cy.get(entityCreateButtonSelector).click();
-        cy.url().should('match', new RegExp('/album/new$'));
-        cy.getEntityCreateUpdateHeading('Album');
+        cy.url().should('match', new RegExp('/tag/new$'));
+        cy.getEntityCreateUpdateHeading('Tag');
         cy.get(entityCreateSaveButtonSelector).should('exist');
         cy.get(entityCreateCancelButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', albumPageUrlPattern);
+        cy.url().should('match', tagPageUrlPattern);
       });
     });
 
@@ -78,68 +78,68 @@ describe('Album e2e test', () => {
       beforeEach(() => {
         cy.authenticatedRequest({
           method: 'POST',
-          url: '/api/albums',
-          body: albumSample,
+          url: '/api/tags',
+          body: tagSample,
         }).then(({ body }) => {
-          album = body;
+          tag = body;
 
           cy.intercept(
             {
               method: 'GET',
-              url: '/api/albums+(?*|)',
+              url: '/api/tags+(?*|)',
               times: 1,
             },
             {
               statusCode: 200,
               headers: {
-                link: '<http://localhost/api/albums?page=0&size=20>; rel="last",<http://localhost/api/albums?page=0&size=20>; rel="first"',
+                link: '<http://localhost/api/tags?page=0&size=20>; rel="last",<http://localhost/api/tags?page=0&size=20>; rel="first"',
               },
-              body: [album],
+              body: [tag],
             },
           ).as('entitiesRequestInternal');
         });
 
-        cy.visit(albumPageUrl);
+        cy.visit(tagPageUrl);
 
         cy.wait('@entitiesRequestInternal');
       });
 
-      it('detail button click should load details Album page', () => {
+      it('detail button click should load details Tag page', () => {
         cy.get(entityDetailsButtonSelector).first().click();
-        cy.getEntityDetailsHeading('album');
+        cy.getEntityDetailsHeading('tag');
         cy.get(entityDetailsBackButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', albumPageUrlPattern);
+        cy.url().should('match', tagPageUrlPattern);
       });
 
-      it('edit button click should load edit Album page and go back', () => {
+      it('edit button click should load edit Tag page and go back', () => {
         cy.get(entityEditButtonSelector).first().click();
-        cy.getEntityCreateUpdateHeading('Album');
+        cy.getEntityCreateUpdateHeading('Tag');
         cy.get(entityCreateSaveButtonSelector).should('exist');
         cy.get(entityCreateCancelButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', albumPageUrlPattern);
+        cy.url().should('match', tagPageUrlPattern);
       });
 
-      it('edit button click should load edit Album page and save', () => {
+      it('edit button click should load edit Tag page and save', () => {
         cy.get(entityEditButtonSelector).first().click();
-        cy.getEntityCreateUpdateHeading('Album');
+        cy.getEntityCreateUpdateHeading('Tag');
         cy.get(entityCreateSaveButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', albumPageUrlPattern);
+        cy.url().should('match', tagPageUrlPattern);
       });
 
-      it('last delete button click should delete instance of Album', () => {
-        cy.intercept('GET', '/api/albums/*').as('dialogDeleteRequest');
+      it('last delete button click should delete instance of Tag', () => {
+        cy.intercept('GET', '/api/tags/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
         cy.wait('@dialogDeleteRequest');
-        cy.getEntityDeleteDialogHeading('album').should('exist');
+        cy.getEntityDeleteDialogHeading('tag').should('exist');
         cy.get(entityConfirmDeleteButtonSelector).click();
         cy.wait('@deleteEntityRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(204);
@@ -147,49 +147,34 @@ describe('Album e2e test', () => {
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', albumPageUrlPattern);
+        cy.url().should('match', tagPageUrlPattern);
 
-        album = undefined;
+        tag = undefined;
       });
     });
   });
 
-  describe('new Album page', () => {
+  describe('new Tag page', () => {
     beforeEach(() => {
-      cy.visit(`${albumPageUrl}`);
+      cy.visit(`${tagPageUrl}`);
       cy.get(entityCreateButtonSelector).click();
-      cy.getEntityCreateUpdateHeading('Album');
+      cy.getEntityCreateUpdateHeading('Tag');
     });
 
-    it('should create an instance of Album', () => {
-      cy.get(`[data-cy="name"]`).type('yearningly fooey');
-      cy.get(`[data-cy="name"]`).should('have.value', 'yearningly fooey');
+    it('should create an instance of Tag', () => {
+      cy.get(`[data-cy="name"]`).type('voluminous unless unknown');
+      cy.get(`[data-cy="name"]`).should('have.value', 'voluminous unless unknown');
 
-      cy.get(`[data-cy="event"]`).type('up');
-      cy.get(`[data-cy="event"]`).should('have.value', 'up');
-
-      cy.get(`[data-cy="creationDate"]`).type('2025-05-22T10:37');
-      cy.get(`[data-cy="creationDate"]`).blur();
-      cy.get(`[data-cy="creationDate"]`).should('have.value', '2025-05-22T10:37');
-
-      cy.get(`[data-cy="overrideDate"]`).type('2025-05-22T17:38');
-      cy.get(`[data-cy="overrideDate"]`).blur();
-      cy.get(`[data-cy="overrideDate"]`).should('have.value', '2025-05-22T17:38');
-
-      cy.setFieldImageAsBytesOfEntity('thumbnail', 'integration-test.png', 'image/png');
-
-      // since cypress clicks submit too fast before the blob fields are validated
-      cy.wait(200); // eslint-disable-line cypress/no-unnecessary-waiting
       cy.get(entityCreateSaveButtonSelector).click();
 
       cy.wait('@postEntityRequest').then(({ response }) => {
         expect(response?.statusCode).to.equal(201);
-        album = response.body;
+        tag = response.body;
       });
       cy.wait('@entitiesRequest').then(({ response }) => {
         expect(response?.statusCode).to.equal(200);
       });
-      cy.url().should('match', albumPageUrlPattern);
+      cy.url().should('match', tagPageUrlPattern);
     });
   });
 });

@@ -11,22 +11,25 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Spring Data JPA repository for the Album entity.
+ *
+ * When extending this class, extend AlbumRepositoryWithBagRelationships too.
+ * For more information refer to https://github.com/jhipster/generator-jhipster/issues/17990.
  */
 @Repository
-public interface AlbumRepository extends JpaRepository<Album, Long> {
+public interface AlbumRepository extends AlbumRepositoryWithBagRelationships, JpaRepository<Album, Long> {
     @Query("select album from Album album where album.user.login = ?#{authentication.name}")
     List<Album> findByUserIsCurrentUser();
 
     default Optional<Album> findOneWithEagerRelationships(Long id) {
-        return this.findOneWithToOneRelationships(id);
+        return this.fetchBagRelationships(this.findOneWithToOneRelationships(id));
     }
 
     default List<Album> findAllWithEagerRelationships() {
-        return this.findAllWithToOneRelationships();
+        return this.fetchBagRelationships(this.findAllWithToOneRelationships());
     }
 
     default Page<Album> findAllWithEagerRelationships(Pageable pageable) {
-        return this.findAllWithToOneRelationships(pageable);
+        return this.fetchBagRelationships(this.findAllWithToOneRelationships(pageable));
     }
 
     @Query(value = "select album from Album album left join fetch album.user", countQuery = "select count(album) from Album album")

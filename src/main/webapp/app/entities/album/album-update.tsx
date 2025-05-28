@@ -5,9 +5,11 @@ import { Translate, ValidatedBlobField, ValidatedField, ValidatedForm, translate
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
+import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
+import { getEntities as getTags } from 'app/entities/tag/tag.reducer';
 import { createEntity, getEntity, reset, updateEntity } from './album.reducer';
 
 export const AlbumUpdate = () => {
@@ -19,6 +21,7 @@ export const AlbumUpdate = () => {
   const isNew = id === undefined;
 
   const users = useAppSelector(state => state.userManagement.users);
+  const tags = useAppSelector(state => state.tag.entities);
   const albumEntity = useAppSelector(state => state.album.entity);
   const loading = useAppSelector(state => state.album.loading);
   const updating = useAppSelector(state => state.album.updating);
@@ -36,6 +39,7 @@ export const AlbumUpdate = () => {
     }
 
     dispatch(getUsers({}));
+    dispatch(getTags({}));
   }, []);
 
   useEffect(() => {
@@ -55,6 +59,7 @@ export const AlbumUpdate = () => {
       ...albumEntity,
       ...values,
       user: users.find(it => it.id.toString() === values.user?.toString()),
+      tags: mapIdList(values.tags),
     };
 
     if (isNew) {
@@ -75,6 +80,7 @@ export const AlbumUpdate = () => {
           creationDate: convertDateTimeFromServer(albumEntity.creationDate),
           overrideDate: convertDateTimeFromServer(albumEntity.overrideDate),
           user: albumEntity?.user?.id,
+          tags: albumEntity?.tags?.map(e => e.id.toString()),
         };
 
   return (
@@ -157,6 +163,23 @@ export const AlbumUpdate = () => {
                   ? users.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
                         {otherEntity.login}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
+              <ValidatedField
+                label={translate('gallerySystemApp.album.tags')}
+                id="album-tags"
+                data-cy="tags"
+                type="select"
+                multiple
+                name="tags"
+              >
+                <option value="" key="0" />
+                {tags
+                  ? tags.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.name}
                       </option>
                     ))
                   : null}

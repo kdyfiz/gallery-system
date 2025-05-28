@@ -3,11 +3,6 @@ description:
 globs: 
 alwaysApply: false
 ---
----
-description: 
-globs: 
-alwaysApply: false
----
 Feature: [Title of the feature]
   As a [type of user],
   I want to [achieve a business goal],
