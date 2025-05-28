@@ -158,4 +158,13 @@ public class AlbumService {
         LOG.debug("Request to get Albums by event: {}", event);
         return albumRepository.findByEventContaining(event, pageable).map(albumMapper::toDto);
     }
+
+    /**
+     * Get all publicly available albums.
+     */
+    @Transactional(readOnly = true)
+    public Page<AlbumDTO> findAllPublic(Pageable pageable) {
+        LOG.debug("Request to get all public Albums");
+        return albumRepository.findAllPublic(pageable).map(albumMapper::toDto);
+    }
 }

@@ -206,7 +206,7 @@ public class AlbumResource {
             );
         }
 
-        Page<AlbumDTO> page = albumService.findAllWithEagerRelationships(pageable);
+        Page<AlbumDTO> page = albumService.findAllPublic(pageable);
         return ResponseEntity.ok().body(page.getContent());
     }
 

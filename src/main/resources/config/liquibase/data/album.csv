@@ -1,11 +1,8 @@
 id;name;event;creation_date;override_date;user_id
-1;Summer Vacation Photos;Summer 2023;2023-07-15T10:00:00.000Z;;2
-2;Birthday Party;Birthday Celebrations;2023-08-20T14:30:00.000Z;;2
-3;Wedding Album;Wedding Events;2023-09-10T16:45:00.000Z;2023-09-10T12:00:00.000Z;2
-4;Family Christmas;Christmas 2023;2023-12-25T09:00:00.000Z;;2
-5;Random Photos;;2023-06-01T11:20:00.000Z;;2
-6;Company Picnic;Corporate Events;2023-07-30T13:15:00.000Z;;2
-7;Graduation Day;Graduation Events;2023-05-15T10:30:00.000Z;;2
-8;Beach Trip;Summer 2023;2023-08-05T08:45:00.000Z;;2
-9;New Year Celebration;New Year 2024;2024-01-01T00:15:00.000Z;;2
-10;Travel Memories;;2023-10-20T12:00:00.000Z;;2 
+1;Summer Vacation Photos;Summer 2023;2023-07-15T10:00:00Z;;1
+2;Birthday Party;Birthday Celebrations;2023-08-20T14:30:00Z;;1
+3;Wedding Album;Wedding Events;2023-09-10T16:45:00Z;2023-09-10T12:00:00Z;1
+4;Family Christmas;Christmas 2023;2023-12-25T09:00:00Z;;1
+5;Random Photos;;2023-06-01T11:20:00Z;;1
+6;Company Picnic;Corporate Events;2023-07-30T13:15:00Z;;1
+7;Graduation Day;Graduation Events;2023-05-15T10:30:00Z;;1

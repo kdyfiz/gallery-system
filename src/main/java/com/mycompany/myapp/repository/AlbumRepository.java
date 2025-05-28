@@ -50,4 +50,10 @@ public interface AlbumRepository extends AlbumRepositoryWithBagRelationships, Jp
 
     @Query("select album from Album album left join fetch album.user where album.id =:id")
     Optional<Album> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query("select distinct album from Album album left join fetch album.user")
+    Page<Album> findAllPublic(Pageable pageable);
+
+    @Query("select distinct album from Album album left join fetch album.user where album.user.login = ?#{principal.username}")
+    Page<Album> findAllForCurrentUser(Pageable pageable);
 }
