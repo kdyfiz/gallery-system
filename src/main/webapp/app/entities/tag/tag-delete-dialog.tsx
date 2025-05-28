@@ -25,7 +25,7 @@ export const TagDeleteDialog = () => {
   const updateSuccess = useAppSelector(state => state.tag.updateSuccess);
 
   const handleClose = () => {
-    navigate(`/tag${pageLocation.search}`);
+    navigate('/tag');
   };
 
   useEffect(() => {

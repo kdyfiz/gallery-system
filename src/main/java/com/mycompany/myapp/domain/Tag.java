@@ -27,13 +27,19 @@ public class Tag implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "name", nullable = false, unique = true)
+    @Size(min = 2, max = 50)
+    @Column(name = "name", length = 50, nullable = false, unique = true)
     private String name;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "user", "tags" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "tags", "photos" }, allowSetters = true)
     private Set<Album> albums = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "album", "tags" }, allowSetters = true)
+    private Set<Photo> photos = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -91,6 +97,37 @@ public class Tag implements Serializable {
     public Tag removeAlbums(Album album) {
         this.albums.remove(album);
         album.getTags().remove(this);
+        return this;
+    }
+
+    public Set<Photo> getPhotos() {
+        return this.photos;
+    }
+
+    public void setPhotos(Set<Photo> photos) {
+        if (this.photos != null) {
+            this.photos.forEach(i -> i.removeTags(this));
+        }
+        if (photos != null) {
+            photos.forEach(i -> i.addTags(this));
+        }
+        this.photos = photos;
+    }
+
+    public Tag photos(Set<Photo> photos) {
+        this.setPhotos(photos);
+        return this;
+    }
+
+    public Tag addPhotos(Photo photo) {
+        this.photos.add(photo);
+        photo.getTags().add(this);
+        return this;
+    }
+
+    public Tag removePhotos(Photo photo) {
+        this.photos.remove(photo);
+        photo.getTags().remove(this);
         return this;
     }
 

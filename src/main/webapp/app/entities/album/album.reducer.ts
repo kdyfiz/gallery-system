@@ -27,6 +27,43 @@ export const getEntities = createAsyncThunk(
   { serializeError: serializeAxiosError },
 );
 
+export const getGalleryEntities = createAsyncThunk(
+  'album/fetch_gallery_entities',
+  async ({ sortBy }: { sortBy: 'EVENT' | 'DATE' }) => {
+    const endpoint = sortBy === 'EVENT' ? 'by-event' : 'by-date';
+    const requestUrl = `${apiUrl}/${endpoint}?cacheBuster=${new Date().getTime()}`;
+    return axios.get<IAlbum[]>(requestUrl);
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const searchAndFilterAlbums = createAsyncThunk(
+  'album/search_and_filter',
+  async (params: {
+    keyword?: string;
+    event?: string;
+    year?: number;
+    tagName?: string;
+    contributorLogin?: string;
+    sortBy?: 'EVENT' | 'DATE';
+  }) => {
+    const queryParams = new URLSearchParams();
+
+    if (params.keyword) queryParams.append('keyword', params.keyword);
+    if (params.event) queryParams.append('event', params.event);
+    if (params.year) queryParams.append('year', params.year.toString());
+    if (params.tagName) queryParams.append('tagName', params.tagName);
+    if (params.contributorLogin) queryParams.append('contributorLogin', params.contributorLogin);
+    if (params.sortBy) queryParams.append('sortBy', params.sortBy.toLowerCase());
+
+    queryParams.append('cacheBuster', new Date().getTime().toString());
+
+    const requestUrl = `${apiUrl}/filter?${queryParams.toString()}`;
+    return axios.get<IAlbum[]>(requestUrl);
+  },
+  { serializeError: serializeAxiosError },
+);
+
 export const getEntity = createAsyncThunk(
   'album/fetch_entity',
   async (id: string | number) => {
@@ -103,6 +140,16 @@ export const AlbumSlice = createEntitySlice({
           totalItems: parseInt(headers['x-total-count'], 10),
         };
       })
+      .addMatcher(isFulfilled(getGalleryEntities, searchAndFilterAlbums), (state, action) => {
+        const { data, headers } = action.payload;
+
+        return {
+          ...state,
+          loading: false,
+          entities: data,
+          totalItems: headers ? parseInt(headers['x-total-count'], 10) : data.length,
+        };
+      })
       .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {
         state.updating = false;
         state.loading = false;
@@ -110,6 +157,11 @@ export const AlbumSlice = createEntitySlice({
         state.entity = action.payload.data;
       })
       .addMatcher(isPending(getEntities, getEntity), state => {
+        state.errorMessage = null;
+        state.updateSuccess = false;
+        state.loading = true;
+      })
+      .addMatcher(isPending(getGalleryEntities, searchAndFilterAlbums), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;

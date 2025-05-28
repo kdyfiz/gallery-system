@@ -396,12 +396,11 @@ class AlbumResourceIT {
         partialUpdatedAlbum.setId(album.getId());
 
         partialUpdatedAlbum
+            .name(UPDATED_NAME)
             .event(UPDATED_EVENT)
             .creationDate(UPDATED_CREATION_DATE)
-            .overrideDate(UPDATED_OVERRIDE_DATE)
             .thumbnail(UPDATED_THUMBNAIL)
-            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE)
-            .keywords(UPDATED_KEYWORDS);
+            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE);
 
         restAlbumMockMvc
             .perform(

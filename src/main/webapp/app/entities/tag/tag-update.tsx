@@ -8,6 +8,7 @@ import { mapIdList } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntities as getAlbums } from 'app/entities/album/album.reducer';
+import { getEntities as getPhotos } from 'app/entities/photo/photo.reducer';
 import { createEntity, getEntity, reset, updateEntity } from './tag.reducer';
 
 export const TagUpdate = () => {
@@ -19,13 +20,14 @@ export const TagUpdate = () => {
   const isNew = id === undefined;
 
   const albums = useAppSelector(state => state.album.entities);
+  const photos = useAppSelector(state => state.photo.entities);
   const tagEntity = useAppSelector(state => state.tag.entity);
   const loading = useAppSelector(state => state.tag.loading);
   const updating = useAppSelector(state => state.tag.updating);
   const updateSuccess = useAppSelector(state => state.tag.updateSuccess);
 
   const handleClose = () => {
-    navigate(`/tag${location.search}`);
+    navigate('/tag');
   };
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export const TagUpdate = () => {
     }
 
     dispatch(getAlbums({}));
+    dispatch(getPhotos({}));
   }, []);
 
   useEffect(() => {
@@ -53,6 +56,7 @@ export const TagUpdate = () => {
       ...tagEntity,
       ...values,
       albums: mapIdList(values.albums),
+      photos: mapIdList(values.photos),
     };
 
     if (isNew) {
@@ -68,6 +72,7 @@ export const TagUpdate = () => {
       : {
           ...tagEntity,
           albums: tagEntity?.albums?.map(e => e.id.toString()),
+          photos: tagEntity?.photos?.map(e => e.id.toString()),
         };
 
   return (
@@ -103,6 +108,8 @@ export const TagUpdate = () => {
                 type="text"
                 validate={{
                   required: { value: true, message: translate('entity.validation.required') },
+                  minLength: { value: 2, message: translate('entity.validation.minlength', { min: 2 }) },
+                  maxLength: { value: 50, message: translate('entity.validation.maxlength', { max: 50 }) },
                 }}
               />
               <ValidatedField
@@ -116,6 +123,23 @@ export const TagUpdate = () => {
                 <option value="" key="0" />
                 {albums
                   ? albums.map(otherEntity => (
+                      <option value={otherEntity.id} key={otherEntity.id}>
+                        {otherEntity.id}
+                      </option>
+                    ))
+                  : null}
+              </ValidatedField>
+              <ValidatedField
+                label={translate('gallerySystemApp.tag.photos')}
+                id="tag-photos"
+                data-cy="photos"
+                type="select"
+                multiple
+                name="photos"
+              >
+                <option value="" key="0" />
+                {photos
+                  ? photos.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
                         {otherEntity.id}
                       </option>

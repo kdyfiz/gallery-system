@@ -11,6 +11,7 @@ export interface IAlbum {
   thumbnailContentType?: string | null;
   thumbnail?: string | null;
   keywords?: string | null;
+  description?: string | null;
   user?: IUser | null;
   tags?: ITag[] | null;
 }

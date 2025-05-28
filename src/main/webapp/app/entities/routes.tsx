@@ -5,6 +5,7 @@ import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 
 import Album from './album';
 import Tag from './tag';
+import Photo from './photo';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 export default () => {
@@ -14,6 +15,7 @@ export default () => {
         {/* prettier-ignore */}
         <Route path="album/*" element={<Album />} />
         <Route path="tag/*" element={<Tag />} />
+        <Route path="photo/*" element={<Photo />} />
         {/* jhipster-needle-add-route-path - JHipster will add routes here */}
       </ErrorBoundaryRoutes>
     </div>

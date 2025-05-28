@@ -50,8 +50,13 @@ public class Album implements Serializable {
     @Column(name = "thumbnail_content_type")
     private String thumbnailContentType;
 
-    @Column(name = "keywords")
+    @Size(max = 500)
+    @Column(name = "keywords", length = 500)
     private String keywords;
+
+    @Lob
+    @Column(name = "description")
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -59,8 +64,13 @@ public class Album implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "rel_album__tags", joinColumns = @JoinColumn(name = "album_id"), inverseJoinColumns = @JoinColumn(name = "tags_id"))
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "albums" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "albums", "photos" }, allowSetters = true)
     private Set<Tag> tags = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "album")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "album", "tags" }, allowSetters = true)
+    private Set<Photo> photos = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -168,6 +178,19 @@ public class Album implements Serializable {
         this.keywords = keywords;
     }
 
+    public String getDescription() {
+        return this.description;
+    }
+
+    public Album description(String description) {
+        this.setDescription(description);
+        return this;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public User getUser() {
         return this.user;
     }
@@ -204,6 +227,37 @@ public class Album implements Serializable {
         return this;
     }
 
+    public Set<Photo> getPhotos() {
+        return this.photos;
+    }
+
+    public void setPhotos(Set<Photo> photos) {
+        if (this.photos != null) {
+            this.photos.forEach(i -> i.setAlbum(null));
+        }
+        if (photos != null) {
+            photos.forEach(i -> i.setAlbum(this));
+        }
+        this.photos = photos;
+    }
+
+    public Album photos(Set<Photo> photos) {
+        this.setPhotos(photos);
+        return this;
+    }
+
+    public Album addPhotos(Photo photo) {
+        this.photos.add(photo);
+        photo.setAlbum(this);
+        return this;
+    }
+
+    public Album removePhotos(Photo photo) {
+        this.photos.remove(photo);
+        photo.setAlbum(null);
+        return this;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -235,6 +289,7 @@ public class Album implements Serializable {
             ", thumbnail='" + getThumbnail() + "'" +
             ", thumbnailContentType='" + getThumbnailContentType() + "'" +
             ", keywords='" + getKeywords() + "'" +
+            ", description='" + getDescription() + "'" +
             "}";
     }
 }

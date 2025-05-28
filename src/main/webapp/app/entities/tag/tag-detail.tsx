@@ -50,6 +50,19 @@ export const TagDetail = () => {
                 ))
               : null}
           </dd>
+          <dt>
+            <Translate contentKey="gallerySystemApp.tag.photos">Photos</Translate>
+          </dt>
+          <dd>
+            {tagEntity.photos
+              ? tagEntity.photos.map((val, i) => (
+                  <span key={val.id}>
+                    <a>{val.id}</a>
+                    {tagEntity.photos && i === tagEntity.photos.length - 1 ? '' : ', '}
+                  </span>
+                ))
+              : null}
+          </dd>
         </dl>
         <Button tag={Link} to="/tag" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

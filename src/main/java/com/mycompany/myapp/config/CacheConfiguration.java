@@ -54,6 +54,10 @@ public class CacheConfiguration {
             createCache(cm, com.mycompany.myapp.domain.Album.class.getName() + ".tags");
             createCache(cm, com.mycompany.myapp.domain.Tag.class.getName());
             createCache(cm, com.mycompany.myapp.domain.Tag.class.getName() + ".albums");
+            createCache(cm, com.mycompany.myapp.domain.Album.class.getName() + ".photos");
+            createCache(cm, com.mycompany.myapp.domain.Tag.class.getName() + ".photos");
+            createCache(cm, com.mycompany.myapp.domain.Photo.class.getName());
+            createCache(cm, com.mycompany.myapp.domain.Photo.class.getName() + ".tags");
             // jhipster-needle-ehcache-add-entry
         };
     }

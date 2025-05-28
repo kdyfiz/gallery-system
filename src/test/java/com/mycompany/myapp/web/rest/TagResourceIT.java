@@ -285,8 +285,6 @@ class TagResourceIT {
         Tag partialUpdatedTag = new Tag();
         partialUpdatedTag.setId(tag.getId());
 
-        partialUpdatedTag.name(UPDATED_NAME);
-
         restTagMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedTag.getId())

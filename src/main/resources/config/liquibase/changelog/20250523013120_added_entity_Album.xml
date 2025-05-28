@@ -32,7 +32,7 @@
             <column name="thumbnail_content_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="keywords" type="varchar(255)">
+            <column name="keywords" type="varchar(500)">
                 <constraints nullable="true" />
             </column>
             <column name="user_id" type="bigint">

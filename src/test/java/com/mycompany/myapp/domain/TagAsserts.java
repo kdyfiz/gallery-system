@@ -59,6 +59,7 @@ public class TagAsserts {
     public static void assertTagUpdatableRelationshipsEquals(Tag expected, Tag actual) {
         assertThat(actual)
             .as("Verify Tag relationships")
-            .satisfies(a -> assertThat(a.getAlbums()).as("check albums").isEqualTo(expected.getAlbums()));
+            .satisfies(a -> assertThat(a.getAlbums()).as("check albums").isEqualTo(expected.getAlbums()))
+            .satisfies(a -> assertThat(a.getPhotos()).as("check photos").isEqualTo(expected.getPhotos()));
     }
 }

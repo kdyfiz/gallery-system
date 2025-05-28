@@ -33,7 +33,9 @@
     },
     {
       "fieldName": "keywords",
-      "fieldType": "String"
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
     }
   ],
   "name": "Album",
@@ -54,6 +56,13 @@
       "relationshipName": "tags",
       "relationshipSide": "left",
       "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "photo",
+      "otherEntityRelationshipName": "album",
+      "relationshipName": "photos",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
     }
   ],
   "searchEngine": "no",

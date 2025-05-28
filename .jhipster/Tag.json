@@ -8,16 +8,24 @@
     {
       "fieldName": "name",
       "fieldType": "String",
-      "fieldValidateRules": ["required", "unique"]
+      "fieldValidateRules": ["required", "minlength", "maxlength", "unique"],
+      "fieldValidateRulesMaxlength": "50",
+      "fieldValidateRulesMinlength": "2"
     }
   ],
   "name": "Tag",
-  "pagination": "pagination",
   "relationships": [
     {
       "otherEntityName": "album",
       "otherEntityRelationshipName": "tags",
       "relationshipName": "albums",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "photo",
+      "otherEntityRelationshipName": "tags",
+      "relationshipName": "photos",
       "relationshipSide": "right",
       "relationshipType": "many-to-many"
     }

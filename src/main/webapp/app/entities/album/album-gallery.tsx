@@ -1,6 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button, Card, CardImg, CardBody, CardTitle, CardText, Row, Col, Container, ButtonGroup, Badge, Spinner, Alert } from 'reactstrap';
+import {
+  Button,
+  Card,
+  CardImg,
+  CardBody,
+  CardTitle,
+  CardText,
+  Row,
+  Col,
+  Container,
+  ButtonGroup,
+  Badge,
+  Spinner,
+  Alert,
+  Input,
+  InputGroup,
+  Form,
+  FormGroup,
+  Label,
+  Collapse,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from 'reactstrap';
 import { TextFormat, Translate, openFile } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,13 +36,26 @@ import {
   faThLarge,
   faSortAlphaDown,
   faSortNumericDown,
+  faSearch,
+  faFilter,
+  faTimes,
+  faChevronDown,
+  faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { APP_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getGalleryEntities } from './album.reducer';
+import { getGalleryEntities, searchAndFilterAlbums } from './album.reducer';
 import './album-gallery.scss';
 
 export type AlbumSortType = 'EVENT' | 'DATE';
+
+interface FilterCriteria {
+  keyword?: string;
+  event?: string;
+  year?: number;
+  tagName?: string;
+  contributorLogin?: string;
+}
 
 export const AlbumGallery = () => {
   const dispatch = useAppDispatch();
@@ -27,30 +64,70 @@ export const AlbumGallery = () => {
 
   const [sortType, setSortType] = useState<AlbumSortType>('EVENT');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showFilters, setShowFilters] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [filters, setFilters] = useState<FilterCriteria>({});
+  const [activeFiltersCount, setActiveFiltersCount] = useState(0);
 
   const albumList = useAppSelector(state => state.album.entities);
   const loading = useAppSelector(state => state.album.loading);
   const totalItems = useAppSelector(state => state.album.totalItems);
 
   useEffect(() => {
-    // Load albums using the specialized gallery endpoint
-    dispatch(
-      getGalleryEntities({
-        sortBy: sortType,
-      }),
-    );
-  }, [dispatch, sortType]);
+    loadAlbums();
+  }, [dispatch, sortType, filters]);
+
+  useEffect(() => {
+    // Count active filters
+    const count = Object.values(filters).filter(value => value !== undefined && value !== '').length;
+    setActiveFiltersCount(count);
+  }, [filters]);
+
+  const loadAlbums = () => {
+    const hasFilters = Object.values(filters).some(value => value !== undefined && value !== '');
+
+    if (hasFilters || searchKeyword) {
+      // Use search and filter endpoint
+      dispatch(
+        searchAndFilterAlbums({
+          ...filters,
+          keyword: searchKeyword || undefined,
+          sortBy: sortType,
+        }),
+      );
+    } else {
+      // Use regular gallery endpoint
+      dispatch(
+        getGalleryEntities({
+          sortBy: sortType,
+        }),
+      );
+    }
+  };
 
   const handleSortChange = (newSortType: AlbumSortType) => {
     setSortType(newSortType);
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    loadAlbums();
+  };
+
+  const handleFilterChange = (filterKey: keyof FilterCriteria, value: any) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterKey]: value || undefined,
+    }));
+  };
+
+  const clearAllFilters = () => {
+    setFilters({});
+    setSearchKeyword('');
+  };
+
   const handleRefresh = () => {
-    dispatch(
-      getGalleryEntities({
-        sortBy: sortType,
-      }),
-    );
+    loadAlbums();
   };
 
   const getGroupedAlbums = () => {
@@ -235,6 +312,109 @@ export const AlbumGallery = () => {
             </div>
           </Col>
         </Row>
+      </div>
+
+      {/* Search and Filter Section */}
+      <div className="search-filter-section mb-4">
+        <Row>
+          <Col md={8}>
+            <Form onSubmit={handleSearch}>
+              <InputGroup>
+                <Input
+                  type="text"
+                  placeholder="Search albums by name, keywords, or description..."
+                  value={searchKeyword}
+                  onChange={e => setSearchKeyword(e.target.value)}
+                />
+                <Button type="submit" color="primary">
+                  <FontAwesomeIcon icon={faSearch} className="me-1" />
+                  <Translate contentKey="gallerySystemApp.album.gallery.search">Search</Translate>
+                </Button>
+              </InputGroup>
+            </Form>
+          </Col>
+          <Col md={4} className="text-end">
+            <Button color="outline-secondary" onClick={() => setShowFilters(!showFilters)} className="me-2">
+              <FontAwesomeIcon icon={faFilter} className="me-1" />
+              <Translate contentKey="gallerySystemApp.album.gallery.filters">Filters</Translate>
+              {activeFiltersCount > 0 && (
+                <Badge color="primary" className="ms-1">
+                  {activeFiltersCount}
+                </Badge>
+              )}
+              <FontAwesomeIcon icon={showFilters ? faChevronUp : faChevronDown} className="ms-1" />
+            </Button>
+            {(activeFiltersCount > 0 || searchKeyword) && (
+              <Button color="outline-danger" onClick={clearAllFilters} size="sm">
+                <FontAwesomeIcon icon={faTimes} className="me-1" />
+                <Translate contentKey="gallerySystemApp.album.gallery.clearFilters">Clear All</Translate>
+              </Button>
+            )}
+          </Col>
+        </Row>
+
+        <Collapse isOpen={showFilters}>
+          <div className="filter-panel mt-3 p-3 border rounded bg-light">
+            <Row>
+              <Col md={3}>
+                <FormGroup>
+                  <Label for="eventFilter">
+                    <Translate contentKey="gallerySystemApp.album.gallery.filterByEvent">Event</Translate>
+                  </Label>
+                  <Input
+                    type="text"
+                    id="eventFilter"
+                    placeholder="Filter by event name..."
+                    value={filters.event || ''}
+                    onChange={e => handleFilterChange('event', e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md={3}>
+                <FormGroup>
+                  <Label for="yearFilter">
+                    <Translate contentKey="gallerySystemApp.album.gallery.filterByYear">Year</Translate>
+                  </Label>
+                  <Input
+                    type="number"
+                    id="yearFilter"
+                    placeholder="Filter by year..."
+                    value={filters.year || ''}
+                    onChange={e => handleFilterChange('year', e.target.value ? parseInt(e.target.value, 10) : undefined)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md={3}>
+                <FormGroup>
+                  <Label for="tagFilter">
+                    <Translate contentKey="gallerySystemApp.album.gallery.filterByTag">Tag</Translate>
+                  </Label>
+                  <Input
+                    type="text"
+                    id="tagFilter"
+                    placeholder="Filter by tag name..."
+                    value={filters.tagName || ''}
+                    onChange={e => handleFilterChange('tagName', e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md={3}>
+                <FormGroup>
+                  <Label for="contributorFilter">
+                    <Translate contentKey="gallerySystemApp.album.gallery.filterByContributor">Contributor</Translate>
+                  </Label>
+                  <Input
+                    type="text"
+                    id="contributorFilter"
+                    placeholder="Filter by contributor..."
+                    value={filters.contributorLogin || ''}
+                    onChange={e => handleFilterChange('contributorLogin', e.target.value)}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+          </div>
+        </Collapse>
       </div>
 
       {/* Loading */}

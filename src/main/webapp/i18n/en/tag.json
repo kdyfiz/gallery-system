@@ -19,7 +19,8 @@
       },
       "id": "ID",
       "name": "Name",
-      "albums": "Albums"
+      "albums": "Albums",
+      "photos": "Photos"
     }
   }
 }

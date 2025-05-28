@@ -33,7 +33,11 @@ public class AlbumDTO implements Serializable {
 
     private String thumbnailContentType;
 
+    @Size(max = 500)
     private String keywords;
+
+    @Lob
+    private String description;
 
     private UserDTO user;
 
@@ -103,6 +107,14 @@ public class AlbumDTO implements Serializable {
         this.keywords = keywords;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public UserDTO getUser() {
         return user;
     }
@@ -151,6 +163,7 @@ public class AlbumDTO implements Serializable {
             ", overrideDate='" + getOverrideDate() + "'" +
             ", thumbnail='" + getThumbnail() + "'" +
             ", keywords='" + getKeywords() + "'" +
+            ", description='" + getDescription() + "'" +
             ", user=" + getUser() +
             ", tags=" + getTags() +
             "}";

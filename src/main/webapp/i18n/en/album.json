@@ -25,7 +25,8 @@
       "thumbnail": "Thumbnail",
       "keywords": "Keywords",
       "user": "User",
-      "tags": "Tags"
+      "tags": "Tags",
+      "photos": "Photos"
     }
   }
 }

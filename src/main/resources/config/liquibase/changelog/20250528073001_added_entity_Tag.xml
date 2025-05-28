@@ -14,7 +14,7 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
+            <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="ux_tag__name" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->

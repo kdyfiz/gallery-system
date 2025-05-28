@@ -1,6 +1,7 @@
 package com.mycompany.myapp.domain;
 
 import static com.mycompany.myapp.domain.AlbumTestSamples.*;
+import static com.mycompany.myapp.domain.PhotoTestSamples.*;
 import static com.mycompany.myapp.domain.TagTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,5 +46,27 @@ class TagTest {
         tag.setAlbums(new HashSet<>());
         assertThat(tag.getAlbums()).doesNotContain(albumBack);
         assertThat(albumBack.getTags()).doesNotContain(tag);
+    }
+
+    @Test
+    void photosTest() {
+        Tag tag = getTagRandomSampleGenerator();
+        Photo photoBack = getPhotoRandomSampleGenerator();
+
+        tag.addPhotos(photoBack);
+        assertThat(tag.getPhotos()).containsOnly(photoBack);
+        assertThat(photoBack.getTags()).containsOnly(tag);
+
+        tag.removePhotos(photoBack);
+        assertThat(tag.getPhotos()).doesNotContain(photoBack);
+        assertThat(photoBack.getTags()).doesNotContain(tag);
+
+        tag.photos(new HashSet<>(Set.of(photoBack)));
+        assertThat(tag.getPhotos()).containsOnly(photoBack);
+        assertThat(photoBack.getTags()).containsOnly(tag);
+
+        tag.setPhotos(new HashSet<>());
+        assertThat(tag.getPhotos()).doesNotContain(photoBack);
+        assertThat(photoBack.getTags()).doesNotContain(tag);
     }
 }

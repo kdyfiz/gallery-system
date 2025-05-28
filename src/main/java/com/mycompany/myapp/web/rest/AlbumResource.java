@@ -159,6 +159,102 @@ public class AlbumResource {
     }
 
     /**
+     * {@code GET  /albums/by-event} : get all albums sorted by event name.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of albums sorted by event.
+     */
+    @GetMapping("/by-event")
+    public ResponseEntity<List<AlbumDTO>> getAllAlbumsByEvent(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+        LOG.debug("REST request to get Albums sorted by event");
+        Page<AlbumDTO> page = albumService.findAllOrderByEvent(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /albums/by-date} : get all albums sorted by date.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of albums sorted by date.
+     */
+    @GetMapping("/by-date")
+    public ResponseEntity<List<AlbumDTO>> getAllAlbumsByDate(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+        LOG.debug("REST request to get Albums sorted by date");
+        Page<AlbumDTO> page = albumService.findAllOrderByDate(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /albums/search} : search albums by keyword.
+     *
+     * @param keyword the search keyword.
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of matching albums.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<AlbumDTO>> searchAlbums(
+        @RequestParam("keyword") String keyword,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST request to search Albums by keyword: {}", keyword);
+        Page<AlbumDTO> page = albumService.searchByKeyword(keyword, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /albums/filter} : filter albums by multiple criteria.
+     *
+     * @param keyword the search keyword (optional).
+     * @param event the event name filter (optional).
+     * @param year the year filter (optional).
+     * @param tagName the tag name filter (optional).
+     * @param contributorLogin the contributor filter (optional).
+     * @param sortBy the sort criteria: "event" or "date" (optional, defaults to "date").
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of filtered albums.
+     */
+    @GetMapping("/filter")
+    public ResponseEntity<List<AlbumDTO>> filterAlbums(
+        @RequestParam(name = "keyword", required = false) String keyword,
+        @RequestParam(name = "event", required = false) String event,
+        @RequestParam(name = "year", required = false) Integer year,
+        @RequestParam(name = "tagName", required = false) String tagName,
+        @RequestParam(name = "contributorLogin", required = false) String contributorLogin,
+        @RequestParam(name = "sortBy", required = false, defaultValue = "date") String sortBy,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug(
+            "REST request to filter Albums with criteria - keyword: {}, event: {}, year: {}, tag: {}, contributor: {}, sortBy: {}",
+            keyword,
+            event,
+            year,
+            tagName,
+            contributorLogin,
+            sortBy
+        );
+
+        Page<AlbumDTO> page;
+
+        // If no filters are applied, use the appropriate sorting method
+        if (keyword == null && event == null && year == null && tagName == null && contributorLogin == null) {
+            if ("event".equalsIgnoreCase(sortBy)) {
+                page = albumService.findAllOrderByEvent(pageable);
+            } else {
+                page = albumService.findAllOrderByDate(pageable);
+            }
+        } else {
+            // Apply filters and then sort the results
+            page = albumService.searchAndFilter(keyword, event, year, tagName, contributorLogin, pageable);
+        }
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
      * {@code GET  /albums/:id} : get the "id" album.
      *
      * @param id the id of the albumDTO to retrieve.

@@ -15,9 +15,12 @@ public class TagDTO implements Serializable {
     private Long id;
 
     @NotNull
+    @Size(min = 2, max = 50)
     private String name;
 
     private Set<AlbumDTO> albums = new HashSet<>();
+
+    private Set<PhotoDTO> photos = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -41,6 +44,14 @@ public class TagDTO implements Serializable {
 
     public void setAlbums(Set<AlbumDTO> albums) {
         this.albums = albums;
+    }
+
+    public Set<PhotoDTO> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Set<PhotoDTO> photos) {
+        this.photos = photos;
     }
 
     @Override
@@ -71,6 +82,7 @@ public class TagDTO implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", albums=" + getAlbums() +
+            ", photos=" + getPhotos() +
             "}";
     }
 }

@@ -163,6 +163,9 @@ export const AlbumUpdate = () => {
                 name="keywords"
                 data-cy="keywords"
                 type="text"
+                validate={{
+                  maxLength: { value: 500, message: translate('entity.validation.maxlength', { max: 500 }) },
+                }}
               />
               <ValidatedField id="album-user" name="user" data-cy="user" label={translate('gallerySystemApp.album.user')} type="select">
                 <option value="" key="0" />

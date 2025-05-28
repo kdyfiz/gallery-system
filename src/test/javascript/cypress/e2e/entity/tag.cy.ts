@@ -15,7 +15,7 @@ describe('Tag e2e test', () => {
   const tagPageUrlPattern = new RegExp('/tag(\\?.*)?$');
   const username = Cypress.env('E2E_USERNAME') ?? 'user';
   const password = Cypress.env('E2E_PASSWORD') ?? 'user';
-  const tagSample = { name: 'black-and-white' };
+  const tagSample = { name: 'shyly' };
 
   let tag;
 
@@ -91,9 +91,6 @@ describe('Tag e2e test', () => {
             },
             {
               statusCode: 200,
-              headers: {
-                link: '<http://localhost/api/tags?page=0&size=20>; rel="last",<http://localhost/api/tags?page=0&size=20>; rel="first"',
-              },
               body: [tag],
             },
           ).as('entitiesRequestInternal');
@@ -162,8 +159,8 @@ describe('Tag e2e test', () => {
     });
 
     it('should create an instance of Tag', () => {
-      cy.get(`[data-cy="name"]`).type('voluminous unless unknown');
-      cy.get(`[data-cy="name"]`).should('have.value', 'voluminous unless unknown');
+      cy.get(`[data-cy="name"]`).type('who');
+      cy.get(`[data-cy="name"]`).should('have.value', 'who');
 
       cy.get(entityCreateSaveButtonSelector).click();
 
