@@ -101,9 +101,10 @@ module.exports = async options =>
           reload: false,
         },
       ),
-      new WebpackNotifierPlugin({
-        title: 'Gallery System',
-        contentImage: path.join(__dirname, 'logo-jhipster.png'),
-      }),
+      // Commented out WebpackNotifierPlugin to prevent ENAMETOOLONG error on Windows
+      // new WebpackNotifierPlugin({
+      //   title: 'Gallery System',
+      //   contentImage: path.join(__dirname, 'logo-jhipster.png'),
+      // }),
     ].filter(Boolean),
   });
