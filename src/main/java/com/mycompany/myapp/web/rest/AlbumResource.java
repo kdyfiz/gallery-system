@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -222,5 +223,47 @@ public class AlbumResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * {@code GET /albums/filter/tags} : get albums filtered by tags
+     */
+    @GetMapping("/albums/filter/tags")
+    public ResponseEntity<List<AlbumDTO>> getAlbumsByTags(
+        @RequestParam Collection<String> tagNames,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST request to get Albums filtered by tags: {}", tagNames);
+        Page<AlbumDTO> page = albumService.findByTags(tagNames, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET /albums/filter/year} : get albums filtered by year
+     */
+    @GetMapping("/albums/filter/year")
+    public ResponseEntity<List<AlbumDTO>> getAlbumsByYear(
+        @RequestParam int year,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST request to get Albums filtered by year: {}", year);
+        Page<AlbumDTO> page = albumService.findByYear(year, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET /albums/filter/event} : get albums filtered by event
+     */
+    @GetMapping("/albums/filter/event")
+    public ResponseEntity<List<AlbumDTO>> getAlbumsByEvent(
+        @RequestParam String event,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST request to get Albums filtered by event: {}", event);
+        Page<AlbumDTO> page = albumService.findByEvent(event, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }

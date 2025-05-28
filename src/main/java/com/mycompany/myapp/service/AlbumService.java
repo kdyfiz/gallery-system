@@ -4,6 +4,7 @@ import com.mycompany.myapp.domain.Album;
 import com.mycompany.myapp.repository.AlbumRepository;
 import com.mycompany.myapp.service.dto.AlbumDTO;
 import com.mycompany.myapp.service.mapper.AlbumMapper;
+import java.util.Collection;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,5 +118,44 @@ public class AlbumService {
     public void delete(Long id) {
         LOG.debug("Request to delete Album : {}", id);
         albumRepository.deleteById(id);
+    }
+
+    /**
+     * Get all albums by tags.
+     *
+     * @param tagNames the tags to filter by.
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Page<AlbumDTO> findByTags(Collection<String> tagNames, Pageable pageable) {
+        LOG.debug("Request to get Albums by tags: {}", tagNames);
+        return albumRepository.findByTagsNameIn(tagNames, pageable).map(albumMapper::toDto);
+    }
+
+    /**
+     * Get all albums by year.
+     *
+     * @param year the year to filter by.
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Page<AlbumDTO> findByYear(int year, Pageable pageable) {
+        LOG.debug("Request to get Albums by year: {}", year);
+        return albumRepository.findByCreationDateYear(year, pageable).map(albumMapper::toDto);
+    }
+
+    /**
+     * Get all albums by event.
+     *
+     * @param event the event to filter by.
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Page<AlbumDTO> findByEvent(String event, Pageable pageable) {
+        LOG.debug("Request to get Albums by event: {}", event);
+        return albumRepository.findByEventContaining(event, pageable).map(albumMapper::toDto);
     }
 }

@@ -1,6 +1,7 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Album;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,15 @@ import org.springframework.stereotype.Repository;
 public interface AlbumRepository extends AlbumRepositoryWithBagRelationships, JpaRepository<Album, Long> {
     @Query("select album from Album album where album.user.login = ?#{authentication.name}")
     List<Album> findByUserIsCurrentUser();
+
+    @Query("select distinct album from Album album left join album.tags tags where tags.name in :tagNames")
+    Page<Album> findByTagsNameIn(@Param("tagNames") Collection<String> tagNames, Pageable pageable);
+
+    @Query("select album from Album album where YEAR(album.creationDate) = :year")
+    Page<Album> findByCreationDateYear(@Param("year") int year, Pageable pageable);
+
+    @Query("select album from Album album where album.event like %:event%")
+    Page<Album> findByEventContaining(@Param("event") String event, Pageable pageable);
 
     default Optional<Album> findOneWithEagerRelationships(Long id) {
         return this.fetchBagRelationships(this.findOneWithToOneRelationships(id));
