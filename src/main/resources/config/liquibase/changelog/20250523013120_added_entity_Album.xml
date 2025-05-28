@@ -32,6 +32,9 @@
             <column name="thumbnail_content_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="keywords" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="user_id" type="bigint">
                 <constraints nullable="true" />
             </column>
@@ -39,6 +42,20 @@
         </createTable>
         <dropDefaultValue tableName="album" columnName="creation_date" columnDataType="${datetimeType}"/>
         <dropDefaultValue tableName="album" columnName="override_date" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <changeSet id="20250523013120-1-relations" author="jhipster">
+
+        <createTable tableName="rel_album__tags">
+            <column name="tags_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="album_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="album_id, tags_id" tableName="rel_album__tags"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
@@ -64,6 +81,7 @@
             <column name="override_date" type="date"/>
             <column name="thumbnail" type="blob"/>
             <column name="thumbnail_content_type" type="string"/>
+            <column name="keywords" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

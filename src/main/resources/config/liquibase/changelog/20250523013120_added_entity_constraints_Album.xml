@@ -16,5 +16,19 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"
                                  />
+
+        <addForeignKeyConstraint baseColumnNames="album_id"
+                                 baseTableName="rel_album__tags"
+                                 constraintName="fk_rel_album__tags__album_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="album"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="tags_id"
+                                 baseTableName="rel_album__tags"
+                                 constraintName="fk_rel_album__tags__tags_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tag"
+                                 />
     </changeSet>
 </databaseChangeLog>

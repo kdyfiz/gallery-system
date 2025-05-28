@@ -18,11 +18,11 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Performance test for the Album entity.
+ * Performance test for the Tag entity.
  *
  * @see <a href="https://github.com/jhipster/generator-jhipster/tree/v8.10.0/generators/gatling#logging-tips">Logging tips</a>
  */
-public class AlbumGatlingTest extends Simulation {
+public class TagGatlingTest extends Simulation {
 
     String baseURL = Optional.ofNullable(System.getProperty("baseURL")).orElse("http://localhost:8080");
 
@@ -59,37 +59,26 @@ public class AlbumGatlingTest extends Simulation {
         .pause(10)
         .repeat(2)
         .on(
-            exec(http("Get all albums").get("/api/albums").headers(headersHttpAuthenticated).check(status().is(200)))
+            exec(http("Get all tags").get("/api/tags").headers(headersHttpAuthenticated).check(status().is(200)))
                 .pause(Duration.ofSeconds(10), Duration.ofSeconds(20))
                 .exec(
-                    http("Create new album")
-                        .post("/api/albums")
+                    http("Create new tag")
+                        .post("/api/tags")
                         .headers(headersHttpAuthenticated)
-                        .body(
-                            StringBody(
-                                "{" +
-                                "\"name\": \"SAMPLE_TEXT\"" +
-                                ", \"event\": \"SAMPLE_TEXT\"" +
-                                ", \"creationDate\": \"2020-01-01T00:00:00.000Z\"" +
-                                ", \"overrideDate\": \"2020-01-01T00:00:00.000Z\"" +
-                                ", \"thumbnail\": null" +
-                                ", \"keywords\": \"SAMPLE_TEXT\"" +
-                                "}"
-                            )
-                        )
+                        .body(StringBody("{" + "\"name\": \"SAMPLE_TEXT\"" + "}"))
                         .asJson()
                         .check(status().is(201))
-                        .check(headerRegex("Location", "(.*)").saveAs("new_album_url"))
+                        .check(headerRegex("Location", "(.*)").saveAs("new_tag_url"))
                 )
                 .exitHereIfFailed()
                 .pause(10)
                 .repeat(5)
-                .on(exec(http("Get created album").get("${new_album_url}").headers(headersHttpAuthenticated)).pause(10))
-                .exec(http("Delete created album").delete("${new_album_url}").headers(headersHttpAuthenticated))
+                .on(exec(http("Get created tag").get("${new_tag_url}").headers(headersHttpAuthenticated)).pause(10))
+                .exec(http("Delete created tag").delete("${new_tag_url}").headers(headersHttpAuthenticated))
                 .pause(10)
         );
 
-    ScenarioBuilder users = scenario("Test the Album entity").exec(scn);
+    ScenarioBuilder users = scenario("Test the Tag entity").exec(scn);
 
     {
         setUp(

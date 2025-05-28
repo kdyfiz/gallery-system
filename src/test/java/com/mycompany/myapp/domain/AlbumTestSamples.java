@@ -10,14 +10,18 @@ public class AlbumTestSamples {
     private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     public static Album getAlbumSample1() {
-        return new Album().id(1L).name("name1").event("event1");
+        return new Album().id(1L).name("name1").event("event1").keywords("keywords1");
     }
 
     public static Album getAlbumSample2() {
-        return new Album().id(2L).name("name2").event("event2");
+        return new Album().id(2L).name("name2").event("event2").keywords("keywords2");
     }
 
     public static Album getAlbumRandomSampleGenerator() {
-        return new Album().id(longCount.incrementAndGet()).name(UUID.randomUUID().toString()).event(UUID.randomUUID().toString());
+        return new Album()
+            .id(longCount.incrementAndGet())
+            .name(UUID.randomUUID().toString())
+            .event(UUID.randomUUID().toString())
+            .keywords(UUID.randomUUID().toString());
     }
 }

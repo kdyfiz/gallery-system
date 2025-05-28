@@ -64,6 +64,9 @@ class AlbumResourceIT {
     private static final String DEFAULT_THUMBNAIL_CONTENT_TYPE = "image/jpg";
     private static final String UPDATED_THUMBNAIL_CONTENT_TYPE = "image/png";
 
+    private static final String DEFAULT_KEYWORDS = "AAAAAAAAAA";
+    private static final String UPDATED_KEYWORDS = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/albums";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -111,7 +114,8 @@ class AlbumResourceIT {
             .creationDate(DEFAULT_CREATION_DATE)
             .overrideDate(DEFAULT_OVERRIDE_DATE)
             .thumbnail(DEFAULT_THUMBNAIL)
-            .thumbnailContentType(DEFAULT_THUMBNAIL_CONTENT_TYPE);
+            .thumbnailContentType(DEFAULT_THUMBNAIL_CONTENT_TYPE)
+            .keywords(DEFAULT_KEYWORDS);
     }
 
     /**
@@ -127,7 +131,8 @@ class AlbumResourceIT {
             .creationDate(UPDATED_CREATION_DATE)
             .overrideDate(UPDATED_OVERRIDE_DATE)
             .thumbnail(UPDATED_THUMBNAIL)
-            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE);
+            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE)
+            .keywords(UPDATED_KEYWORDS);
     }
 
     @BeforeEach
@@ -236,7 +241,8 @@ class AlbumResourceIT {
             .andExpect(jsonPath("$.[*].creationDate").value(hasItem(DEFAULT_CREATION_DATE.toString())))
             .andExpect(jsonPath("$.[*].overrideDate").value(hasItem(DEFAULT_OVERRIDE_DATE.toString())))
             .andExpect(jsonPath("$.[*].thumbnailContentType").value(hasItem(DEFAULT_THUMBNAIL_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].thumbnail").value(hasItem(Base64.getEncoder().encodeToString(DEFAULT_THUMBNAIL))));
+            .andExpect(jsonPath("$.[*].thumbnail").value(hasItem(Base64.getEncoder().encodeToString(DEFAULT_THUMBNAIL))))
+            .andExpect(jsonPath("$.[*].keywords").value(hasItem(DEFAULT_KEYWORDS)));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -273,7 +279,8 @@ class AlbumResourceIT {
             .andExpect(jsonPath("$.creationDate").value(DEFAULT_CREATION_DATE.toString()))
             .andExpect(jsonPath("$.overrideDate").value(DEFAULT_OVERRIDE_DATE.toString()))
             .andExpect(jsonPath("$.thumbnailContentType").value(DEFAULT_THUMBNAIL_CONTENT_TYPE))
-            .andExpect(jsonPath("$.thumbnail").value(Base64.getEncoder().encodeToString(DEFAULT_THUMBNAIL)));
+            .andExpect(jsonPath("$.thumbnail").value(Base64.getEncoder().encodeToString(DEFAULT_THUMBNAIL)))
+            .andExpect(jsonPath("$.keywords").value(DEFAULT_KEYWORDS));
     }
 
     @Test
@@ -301,7 +308,8 @@ class AlbumResourceIT {
             .creationDate(UPDATED_CREATION_DATE)
             .overrideDate(UPDATED_OVERRIDE_DATE)
             .thumbnail(UPDATED_THUMBNAIL)
-            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE);
+            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE)
+            .keywords(UPDATED_KEYWORDS);
         AlbumDTO albumDTO = albumMapper.toDto(updatedAlbum);
 
         restAlbumMockMvc
@@ -388,9 +396,12 @@ class AlbumResourceIT {
         partialUpdatedAlbum.setId(album.getId());
 
         partialUpdatedAlbum
+            .event(UPDATED_EVENT)
+            .creationDate(UPDATED_CREATION_DATE)
             .overrideDate(UPDATED_OVERRIDE_DATE)
             .thumbnail(UPDATED_THUMBNAIL)
-            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE);
+            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE)
+            .keywords(UPDATED_KEYWORDS);
 
         restAlbumMockMvc
             .perform(
@@ -424,7 +435,8 @@ class AlbumResourceIT {
             .creationDate(UPDATED_CREATION_DATE)
             .overrideDate(UPDATED_OVERRIDE_DATE)
             .thumbnail(UPDATED_THUMBNAIL)
-            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE);
+            .thumbnailContentType(UPDATED_THUMBNAIL_CONTENT_TYPE)
+            .keywords(UPDATED_KEYWORDS);
 
         restAlbumMockMvc
             .perform(

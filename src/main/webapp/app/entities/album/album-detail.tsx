@@ -76,9 +76,28 @@ export const AlbumDetail = () => {
             ) : null}
           </dd>
           <dt>
+            <span id="keywords">
+              <Translate contentKey="gallerySystemApp.album.keywords">Keywords</Translate>
+            </span>
+          </dt>
+          <dd>{albumEntity.keywords}</dd>
+          <dt>
             <Translate contentKey="gallerySystemApp.album.user">User</Translate>
           </dt>
           <dd>{albumEntity.user ? albumEntity.user.login : ''}</dd>
+          <dt>
+            <Translate contentKey="gallerySystemApp.album.tags">Tags</Translate>
+          </dt>
+          <dd>
+            {albumEntity.tags
+              ? albumEntity.tags.map((val, i) => (
+                  <span key={val.id}>
+                    <a>{val.name}</a>
+                    {albumEntity.tags && i === albumEntity.tags.length - 1 ? '' : ', '}
+                  </span>
+                ))
+              : null}
+          </dd>
         </dl>
         <Button tag={Link} to="/album" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

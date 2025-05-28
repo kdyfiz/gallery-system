@@ -8,7 +8,8 @@
       "entities": {
         "main": "Entities",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
-        "album": "Album"
+        "album": "Album",
+        "tag": "Tag"
       },
       "account": {
         "main": "Account",

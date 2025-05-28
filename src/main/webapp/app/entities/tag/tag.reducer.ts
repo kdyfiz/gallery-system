@@ -2,9 +2,9 @@ import axios from 'axios';
 import { createAsyncThunk, isFulfilled, isPending } from '@reduxjs/toolkit';
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { IAlbum, defaultValue } from 'app/shared/model/album.model';
+import { ITag, defaultValue } from 'app/shared/model/tag.model';
 
-const initialState: EntityState<IAlbum> = {
+const initialState: EntityState<ITag> = {
   loading: false,
   errorMessage: null,
   entities: [],
@@ -14,32 +14,32 @@ const initialState: EntityState<IAlbum> = {
   updateSuccess: false,
 };
 
-const apiUrl = 'api/albums';
+const apiUrl = 'api/tags';
 
 // Actions
 
 export const getEntities = createAsyncThunk(
-  'album/fetch_entity_list',
+  'tag/fetch_entity_list',
   async ({ page, size, sort }: IQueryParams) => {
     const requestUrl = `${apiUrl}?${sort ? `page=${page}&size=${size}&sort=${sort}&` : ''}cacheBuster=${new Date().getTime()}`;
-    return axios.get<IAlbum[]>(requestUrl);
+    return axios.get<ITag[]>(requestUrl);
   },
   { serializeError: serializeAxiosError },
 );
 
 export const getEntity = createAsyncThunk(
-  'album/fetch_entity',
+  'tag/fetch_entity',
   async (id: string | number) => {
     const requestUrl = `${apiUrl}/${id}`;
-    return axios.get<IAlbum>(requestUrl);
+    return axios.get<ITag>(requestUrl);
   },
   { serializeError: serializeAxiosError },
 );
 
 export const createEntity = createAsyncThunk(
-  'album/create_entity',
-  async (entity: IAlbum, thunkAPI) => {
-    const result = await axios.post<IAlbum>(apiUrl, cleanEntity(entity));
+  'tag/create_entity',
+  async (entity: ITag, thunkAPI) => {
+    const result = await axios.post<ITag>(apiUrl, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -47,9 +47,9 @@ export const createEntity = createAsyncThunk(
 );
 
 export const updateEntity = createAsyncThunk(
-  'album/update_entity',
-  async (entity: IAlbum, thunkAPI) => {
-    const result = await axios.put<IAlbum>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
+  'tag/update_entity',
+  async (entity: ITag, thunkAPI) => {
+    const result = await axios.put<ITag>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -57,9 +57,9 @@ export const updateEntity = createAsyncThunk(
 );
 
 export const partialUpdateEntity = createAsyncThunk(
-  'album/partial_update_entity',
-  async (entity: IAlbum, thunkAPI) => {
-    const result = await axios.patch<IAlbum>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
+  'tag/partial_update_entity',
+  async (entity: ITag, thunkAPI) => {
+    const result = await axios.patch<ITag>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -67,10 +67,10 @@ export const partialUpdateEntity = createAsyncThunk(
 );
 
 export const deleteEntity = createAsyncThunk(
-  'album/delete_entity',
+  'tag/delete_entity',
   async (id: string | number, thunkAPI) => {
     const requestUrl = `${apiUrl}/${id}`;
-    const result = await axios.delete<IAlbum>(requestUrl);
+    const result = await axios.delete<ITag>(requestUrl);
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -79,8 +79,8 @@ export const deleteEntity = createAsyncThunk(
 
 // slice
 
-export const AlbumSlice = createEntitySlice({
-  name: 'album',
+export const TagSlice = createEntitySlice({
+  name: 'tag',
   initialState,
   extraReducers(builder) {
     builder
@@ -122,7 +122,7 @@ export const AlbumSlice = createEntitySlice({
   },
 });
 
-export const { reset } = AlbumSlice.actions;
+export const { reset } = TagSlice.actions;
 
 // Reducer
-export default AlbumSlice.reducer;
+export default TagSlice.reducer;

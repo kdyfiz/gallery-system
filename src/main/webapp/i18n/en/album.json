@@ -8,21 +8,6 @@
         "createOrEditLabel": "Create or edit a Album",
         "notFound": "No Albums found"
       },
-      "gallery": {
-        "title": "Photo Gallery",
-        "subtitle": "Browse and organize your photo albums",
-        "backToList": "Back to List",
-        "createAlbum": "Create Album",
-        "refresh": "Refresh",
-        "sortBy": "Sort by:",
-        "sortByEvent": "Event",
-        "sortByDate": "Date",
-        "view": "View:",
-        "loading": "Loading albums...",
-        "noAlbums": "No albums found",
-        "createFirst": "Create your first album to get started!",
-        "miscellaneousDesc": "Albums without a specific event"
-      },
       "created": "A new Album is created with identifier {{ param }}",
       "updated": "A Album is updated with identifier {{ param }}",
       "deleted": "A Album is deleted with identifier {{ param }}",
@@ -38,7 +23,9 @@
       "creationDate": "Creation Date",
       "overrideDate": "Override Date",
       "thumbnail": "Thumbnail",
-      "user": "User"
+      "keywords": "Keywords",
+      "user": "User",
+      "tags": "Tags"
     }
   }
 }

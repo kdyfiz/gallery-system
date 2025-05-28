@@ -54,7 +54,8 @@ public class AlbumAsserts {
             .satisfies(a -> assertThat(a.getThumbnail()).as("check thumbnail").isEqualTo(expected.getThumbnail()))
             .satisfies(a ->
                 assertThat(a.getThumbnailContentType()).as("check thumbnail contenty type").isEqualTo(expected.getThumbnailContentType())
-            );
+            )
+            .satisfies(a -> assertThat(a.getKeywords()).as("check keywords").isEqualTo(expected.getKeywords()));
     }
 
     /**
@@ -64,6 +65,8 @@ public class AlbumAsserts {
      * @param actual the actual entity
      */
     public static void assertAlbumUpdatableRelationshipsEquals(Album expected, Album actual) {
-        // empty method
+        assertThat(actual)
+            .as("Verify Album relationships")
+            .satisfies(a -> assertThat(a.getTags()).as("check tags").isEqualTo(expected.getTags()));
     }
 }

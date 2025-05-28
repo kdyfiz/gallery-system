@@ -172,44 +172,6 @@ public class AlbumResource {
     }
 
     /**
-     * {@code GET  /albums/gallery} : get albums organized for gallery view.
-     *
-     * @param sortBy the sorting criteria (EVENT or DATE).
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of albums organized for gallery.
-     */
-    @GetMapping("/gallery")
-    public ResponseEntity<List<AlbumDTO>> getAlbumsForGallery(
-        @RequestParam(name = "sortBy", required = false, defaultValue = "EVENT") String sortBy
-    ) {
-        LOG.debug("REST request to get Albums for gallery view with sortBy: {}", sortBy);
-
-        // Create pageable with large size for gallery view and appropriate sorting
-        Pageable pageable;
-        if ("DATE".equals(sortBy)) {
-            pageable = org.springframework.data.domain.PageRequest.of(
-                0,
-                1000,
-                org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Order.desc("overrideDate").nullsLast(),
-                    org.springframework.data.domain.Sort.Order.desc("creationDate")
-                )
-            );
-        } else {
-            pageable = org.springframework.data.domain.PageRequest.of(
-                0,
-                1000,
-                org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Order.asc("event").nullsLast(),
-                    org.springframework.data.domain.Sort.Order.asc("name")
-                )
-            );
-        }
-
-        Page<AlbumDTO> page = albumService.findAllWithEagerRelationships(pageable);
-        return ResponseEntity.ok().body(page.getContent());
-    }
-
-    /**
      * {@code DELETE  /albums/:id} : delete the "id" album.
      *
      * @param id the id of the albumDTO to delete.
