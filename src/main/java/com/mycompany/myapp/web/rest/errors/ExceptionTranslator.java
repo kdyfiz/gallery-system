@@ -207,7 +207,10 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
         if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
             if (err instanceof HttpMessageConversionException) return "Unable to convert http message";
-            if (err instanceof DataAccessException) return "Failure during data access";
+            if (err instanceof DataAccessException) {
+                LOG.error("Database access error", err);
+                return "Database operation failed - please try again later";
+            }
             if (containsPackageName(err.getMessage())) return "Unexpected runtime exception";
         }
         return err.getCause() != null ? err.getCause().getMessage() : err.getMessage();
@@ -218,6 +221,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         if (err instanceof AccessDeniedException) return HttpStatus.FORBIDDEN;
         if (err instanceof ConcurrencyFailureException) return HttpStatus.CONFLICT;
         if (err instanceof BadCredentialsException) return HttpStatus.UNAUTHORIZED;
+        if (err instanceof DataAccessException) return HttpStatus.SERVICE_UNAVAILABLE; // Return 503 for DB issues
         return null;
     }
 

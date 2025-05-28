@@ -59,12 +59,19 @@ public class AlbumResource {
     public ResponseEntity<AlbumDTO> createAlbum(@Valid @RequestBody AlbumDTO albumDTO) throws URISyntaxException {
         LOG.debug("REST request to save Album : {}", albumDTO);
         if (albumDTO.getId() != null) {
+            LOG.warn("Invalid album creation attempt with existing ID: {}", albumDTO.getId());
             throw new BadRequestAlertException("A new album cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        albumDTO = albumService.save(albumDTO);
-        return ResponseEntity.created(new URI("/api/albums/" + albumDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, albumDTO.getId().toString()))
-            .body(albumDTO);
+        try {
+            albumDTO = albumService.save(albumDTO);
+            LOG.info("Album created successfully with ID: {}", albumDTO.getId());
+            return ResponseEntity.created(new URI("/api/albums/" + albumDTO.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, albumDTO.getId().toString()))
+                .body(albumDTO);
+        } catch (Exception e) {
+            LOG.error("Failed to create album: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     /**
@@ -84,20 +91,27 @@ public class AlbumResource {
     ) throws URISyntaxException {
         LOG.debug("REST request to update Album : {}, {}", id, albumDTO);
         if (albumDTO.getId() == null) {
+            LOG.warn("Invalid album update attempt with null ID");
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, albumDTO.getId())) {
+            LOG.warn("Invalid album update attempt with mismatched IDs. Path ID: {}, DTO ID: {}", id, albumDTO.getId());
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
-
         if (!albumRepository.existsById(id)) {
+            LOG.warn("Attempt to update non-existent album with ID: {}", id);
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
-        albumDTO = albumService.update(albumDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, albumDTO.getId().toString()))
-            .body(albumDTO);
+        try {
+            albumDTO = albumService.update(albumDTO);
+            LOG.info("Album updated successfully. ID: {}", albumDTO.getId());
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, albumDTO.getId().toString()))
+                .body(albumDTO);
+        } catch (Exception e) {
+            LOG.error("Failed to update album with ID {}: {}", id, e.getMessage(), e);
+            throw e;
+        }
     }
 
     /**
