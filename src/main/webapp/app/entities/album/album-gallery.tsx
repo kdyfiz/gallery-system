@@ -54,7 +54,9 @@ export const AlbumGallery = () => {
   };
 
   const getGroupedAlbums = () => {
-    if (!albumList || albumList.length === 0) return {};
+    if (!albumList || albumList.length === 0) {
+      return {};
+    }
 
     if (sortType === 'EVENT') {
       // Group by event, with "Miscellaneous" for albums without events

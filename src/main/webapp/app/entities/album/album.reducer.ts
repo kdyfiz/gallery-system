@@ -15,8 +15,18 @@ const initialState: EntityState<IAlbum> = {
 };
 
 const apiUrl = 'api/albums';
+const galleryApiUrl = 'api/albums/gallery';
 
 // Actions
+
+export const getGalleryEntities = createAsyncThunk(
+  'album/fetch_gallery_list',
+  async ({ sortBy }: { sortBy: string }) => {
+    const requestUrl = `${galleryApiUrl}?sortBy=${sortBy}&cacheBuster=${new Date().getTime()}`;
+    return axios.get<IAlbum[]>(requestUrl);
+  },
+  { serializeError: serializeAxiosError },
+);
 
 export const getEntities = createAsyncThunk(
   'album/fetch_entity_list',
@@ -93,9 +103,8 @@ export const AlbumSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addMatcher(isFulfilled(getEntities), (state, action) => {
+      .addMatcher(isFulfilled(getEntities, getGalleryEntities), (state, action) => {
         const { data, headers } = action.payload;
-
         return {
           ...state,
           loading: false,
