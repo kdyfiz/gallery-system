@@ -1,4 +1,5 @@
-#update 3 
+#update 3
+
 - done run jdl
 - done run ci-cd
 - done update gherkin file
@@ -7,266 +8,428 @@
 - done update performance testing in ci
 - can run ./mvnw gatling:test - to open gatling file .html
 
-# gallerySystem
+# Gallery System
 
-This application was generated using JHipster 8.10.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.10.0](https://www.jhipster.tech/documentation-archive/v8.10.0).
+This is a **JHipster-based photo gallery management application** built with Spring Boot and React. The application provides a comprehensive solution for organizing, searching, and displaying photo albums with advanced filtering capabilities.
 
-## Project Structure
+## 🌟 Key Features
 
-Node is required for generation and recommended for development. `package.json` is always generated for a better development experience with prettier, commit hooks, scripts and so on.
+### Enhanced Album Gallery Interface
 
-In the project root, JHipster generates configuration files for tools like git, prettier, eslint, husky, and others that are well known and you can find references in the web.
+- **Modern, responsive design** with mobile-first approach
+- **Multiple view modes**: Grid, List, and Masonry layouts
+- **Advanced search functionality** with full-text search across names, keywords, and descriptions
+- **Multi-criteria filtering** by event, year, tag, and contributor
+- **Real-time statistics dashboard** showing total albums, photos, recent albums, and contributors
+- **Album selection and bulk operations** with visual feedback
+- **Smooth animations and transitions** for enhanced user experience
 
-`/src/*` structure follows default Java structure.
+### Comprehensive Search & Filter System
 
-- `.yo-rc.json` - Yeoman configuration file
-  JHipster configuration is stored in this file at `generator-jhipster` key. You may find `generator-jhipster-*` for specific blueprints configuration.
-- `.yo-resolve` (optional) - Yeoman conflict resolver
-  Allows to use a specific action when conflicts are found skipping prompts for files that matches a pattern. Each line should match `[pattern] [action]` with pattern been a [Minimatch](https://github.com/isaacs/minimatch#minimatch) pattern and action been one of skip (default if omitted) or force. Lines starting with `#` are considered comments and are ignored.
-- `.jhipster/*.json` - JHipster entity configuration files
+- **Keyword Search**: Search across album names, keywords, and descriptions
+- **Event Filter**: Filter albums by event name
+- **Year Filter**: Filter albums by creation year
+- **Tag Filter**: Filter albums by associated tags
+- **Contributor Filter**: Filter albums by creator
+- **Sort Options**: Sort by event (alphabetical) or date (chronological)
+- **Combined Filtering**: Apply multiple filters simultaneously
 
-- `npmw` - wrapper to use locally installed npm.
-  JHipster installs Node and npm locally using the build tool by default. This wrapper makes sure npm is installed locally and uses it avoiding some differences different versions can cause. By using `./npmw` instead of the traditional `npm` you can configure a Node-less environment to develop or test your application.
-- `/src/main/docker` - Docker configurations for the application and services that the application depends on
+### Album Management
 
-## Development
+- **Album CRUD Operations**: Create, read, update, delete albums
+- **Photo Associations**: Link multiple photos to albums
+- **Tag System**: Organize albums with customizable tags
+- **Thumbnail Support**: Upload and display album thumbnails
+- **Description Support**: Add detailed descriptions to albums
+- **User Attribution**: Track album creators and contributors
 
-The build system will install automatically the recommended version of Node and npm.
+### Technical Features
 
-We provide a wrapper to launch npm.
-You will only need to run this command when dependencies change in [package.json](package.json).
+- **REST API**: Comprehensive RESTful endpoints with proper HTTP status codes
+- **Database Optimization**: Efficient queries with JPA/Hibernate
+- **Data Transfer Objects (DTOs)**: Clean separation of API and domain models
+- **Liquibase Integration**: Database migration management
+- **TypeScript Support**: Type-safe frontend development
+- **Redux State Management**: Predictable state management
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
 
+## 🛠 Technology Stack
+
+### Backend
+
+- **Java 21** - Programming language
+- **Spring Boot 3.2.x** - Application framework
+- **Spring Data JPA** - Data persistence
+- **Hibernate** - ORM framework
+- **H2/PostgreSQL** - Database options
+- **Liquibase** - Database migration
+- **Maven** - Build tool
+- **JUnit 5** - Testing framework
+
+### Frontend
+
+- **React 18** - Frontend framework
+- **TypeScript** - Type-safe JavaScript
+- **Redux Toolkit** - State management
+- **React Router** - Navigation
+- **Bootstrap 5** - CSS framework
+- **ReactStrap** - React Bootstrap components
+- **Sass** - CSS preprocessor
+- **Webpack** - Module bundler
+
+### Testing
+
+- **JUnit 5** - Backend unit testing
+- **Mockito** - Mocking framework
+- **Spring Boot Test** - Integration testing
+- **Cypress** - End-to-end testing
+- **Jest** - Frontend unit testing
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Java 21** or higher
+- **Node.js 22.14.0** or higher
+- **npm** or **yarn**
+- **Git**
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd gallery-system
+   ```
+
+2. **Install backend dependencies**
+
+   ```bash
+   ./mvnw clean install
+   ```
+
+3. **Install frontend dependencies**
+
+   ```bash
+   npm install
+   ```
+
+4. **Start the application**
+
+   ```bash
+   # Start backend (Spring Boot)
+   ./mvnw spring-boot:run
+
+   # In another terminal, start frontend (React)
+   npm start
+   ```
+
+5. **Access the application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8080
+   - Database Console (H2): http://localhost:8080/h2-console
+
+### Development
+
+#### Running Tests
+
+```bash
+# Backend tests
+./mvnw test
+
+# Frontend tests
+npm test
+
+# E2E tests
+npm run e2e
 ```
-./npmw install
-```
 
-We use npm scripts and [Webpack][] as our build system.
+#### Building for Production
 
-Run the following commands in two separate terminals to create a blissful development experience where your browser
-auto-refreshes when files change on your hard drive.
+```bash
+# Build frontend
+npm run webapp:build
 
-```
-./mvnw
-./npmw start
-```
+# Build backend
+./mvnw clean package -Pprod
 
-Npm is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
-specifying a newer version in [package.json](package.json). You can also run `./npmw update` and `./npmw install` to manage dependencies.
-Add the `help` flag on any command to see how you can use it. For example, `./npmw help update`.
-
-The `./npmw run` command will list all the scripts available to run for this project.
-
-### PWA Support
-
-JHipster ships with PWA (Progressive Web App) support, and it's turned off by default. One of the main components of a PWA is a service worker.
-
-The service worker initialization code is commented out by default. To enable it, uncomment the following code in `src/main/webapp/index.html`:
-
-```html
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js').then(function () {
-      console.log('Service Worker Registered');
-    });
-  }
-</script>
-```
-
-Note: [Workbox](https://developers.google.com/web/tools/workbox/) powers JHipster's service worker. It dynamically generates the `service-worker.js` file.
-
-### Managing dependencies
-
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
-
-```
-./npmw install --save --save-exact leaflet
-```
-
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
-
-```
-./npmw install --save-dev --save-exact @types/leaflet
-```
-
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
-Note: There are still a few other things remaining to do for Leaflet that we won't detail here.
-
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
-
-## Building for production
-
-### Packaging as jar
-
-To build the final jar and optimize the gallerySystem application for production, run:
-
-```
-./mvnw -Pprod clean verify
-```
-
-This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files.
-To ensure everything worked, run:
-
-```
+# Run production build
 java -jar target/*.jar
 ```
 
-Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
+## 📚 API Documentation
 
-Refer to [Using JHipster in production][] for more details.
+### Album Endpoints
 
-### Packaging as war
+| Method   | Endpoint               | Description                    |
+| -------- | ---------------------- | ------------------------------ |
+| `GET`    | `/api/albums`          | Get all albums with pagination |
+| `GET`    | `/api/albums/{id}`     | Get specific album by ID       |
+| `POST`   | `/api/albums`          | Create new album               |
+| `PUT`    | `/api/albums/{id}`     | Update existing album          |
+| `DELETE` | `/api/albums/{id}`     | Delete album                   |
+| `GET`    | `/api/albums/gallery`  | Get albums for gallery view    |
+| `GET`    | `/api/albums/search`   | Search albums by keyword       |
+| `GET`    | `/api/albums/filter`   | Filter albums by criteria      |
+| `GET`    | `/api/albums/by-event` | Get albums by event name       |
+| `GET`    | `/api/albums/by-date`  | Get albums by year             |
 
-To package your application as a war in order to deploy it to an application server, run:
+### Filter Parameters
 
-```
-./mvnw -Pprod,war clean verify
-```
+- `keyword`: Search in name, keywords, description
+- `event`: Filter by event name
+- `year`: Filter by creation year
+- `tagName`: Filter by tag name
+- `contributorLogin`: Filter by contributor username
+- `sortBy`: Sort by `EVENT` or `DATE`
 
-### JHipster Control Center
+### Example API Calls
 
-JHipster Control Center can help you manage and control your application(s). You can start a local control center server (accessible on http://localhost:7419) with:
+```bash
+# Get all albums
+curl "http://localhost:8080/api/albums"
 
-```
-docker compose -f src/main/docker/jhipster-control-center.yml up
-```
+# Search albums
+curl "http://localhost:8080/api/albums/search?keyword=vacation"
 
-## Testing
+# Filter albums with multiple criteria
+curl "http://localhost:8080/api/albums/filter?event=Wedding&year=2023&sortBy=DATE"
 
-### Spring Boot tests
-
-To launch your application's tests, run:
-
-```
-./mvnw verify
-```
-
-### Gatling
-
-Performance tests are run by [Gatling][] and written in Scala. They're located in [src/test/java/gatling/simulations](src/test/java/gatling/simulations).
-
-You can execute all Gatling tests with
-
-```
-./mvnw gatling:test
-```
-
-### Client tests
-
-Unit tests are run by [Jest][]. They're located near components and can be run with:
-
-```
-./npmw test
+# Get albums for gallery view
+curl "http://localhost:8080/api/albums/gallery?sortBy=EVENT"
 ```
 
-UI end-to-end tests are powered by [Cypress][]. They're located in [src/test/javascript/cypress](src/test/javascript/cypress)
-and can be run by starting Spring Boot in one terminal (`./mvnw spring-boot:run`) and running the tests (`./npmw run e2e`) in a second one.
+## 🎨 User Interface Features
 
-#### Lighthouse audits
+### Gallery View Features
 
-You can execute automated [Lighthouse audits](https://developers.google.com/web/tools/lighthouse/) with [cypress-audit](https://github.com/mfrachet/cypress-audit) by running `./npmw run e2e:cypress:audits`.
-You should only run the audits when your application is packaged with the production profile.
-The lighthouse report is created in `target/cypress/lhreport.html`
+1. **Statistics Dashboard**
 
-## Others
+   - Total albums count
+   - Total photos count
+   - Recent albums (last 7 days)
+   - Active contributors count
 
-### Code quality using Sonar
+2. **Search and Filter Panel**
 
-Sonar is used to analyse code quality. You can start a local Sonar server (accessible on http://localhost:9001) with:
+   - Global search bar with real-time results
+   - Collapsible filter panel
+   - Active filter count badge
+   - Clear all filters option
 
+3. **View Controls**
+
+   - Grid view (default)
+   - List view (detailed)
+   - Masonry view (coming soon)
+   - Sort by event or date
+
+4. **Album Cards**
+
+   - Thumbnail preview with hover effects
+   - Album metadata (name, event, date, owner)
+   - Tag display with overflow handling
+   - Action buttons (view, edit, select)
+
+5. **Bulk Operations**
+   - Multi-select albums
+   - Select all functionality
+   - Clear selection
+   - Bulk delete (with confirmation)
+
+### Responsive Design
+
+- **Mobile (< 768px)**: Single column layout, touch-optimized controls
+- **Tablet (768px - 992px)**: Two-column grid, optimized spacing
+- **Desktop (> 992px)**: Multi-column grid, full feature set
+
+## 🧪 Testing
+
+### E2E Test Coverage
+
+The application includes comprehensive Cypress E2E tests covering:
+
+- Gallery layout and navigation
+- Search functionality
+- Filter operations
+- Sort and view controls
+- Album card interactions
+- Bulk selection and operations
+- Responsive design
+- Accessibility features
+- Performance metrics
+
+### Test Data IDs
+
+All interactive elements include `data-testid` attributes for reliable testing:
+
+```typescript
+// Search components
+data-testid="search-input"
+data-testid="search-btn"
+
+// Filter components
+data-testid="filters-toggle-btn"
+data-testid="event-filter-input"
+data-testid="year-filter-input"
+
+// Album cards
+data-testid="album-card-{id}"
+data-testid="album-title-link-{id}"
+data-testid="view-album-btn-{id}"
 ```
-docker compose -f src/main/docker/sonar.yml up -d
+
+### Running E2E Tests
+
+```bash
+# Open Cypress Test Runner
+npm run e2e:open
+
+# Run tests headlessly
+npm run e2e:run
+
+# Run specific test file
+npx cypress run --spec "src/test/javascript/e2e/album-gallery.cy.ts"
 ```
 
-Note: we have turned off forced authentication redirect for UI in [src/main/docker/sonar.yml](src/main/docker/sonar.yml) for out of the box experience while trying out SonarQube, for real use cases turn it back on.
+## 🔧 Configuration
 
-You can run a Sonar analysis with using the [sonar-scanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or by using the maven plugin.
+### Database Configuration
 
-Then, run a Sonar analysis:
+The application supports multiple database configurations:
 
-```
-./mvnw -Pprod clean verify sonar:sonar -Dsonar.login=admin -Dsonar.password=admin
-```
-
-If you need to re-run the Sonar phase, please be sure to specify at least the `initialize` phase since Sonar properties are loaded from the sonar-project.properties file.
-
-```
-./mvnw initialize sonar:sonar -Dsonar.login=admin -Dsonar.password=admin
-```
-
-Additionally, Instead of passing `sonar.password` and `sonar.login` as CLI arguments, these parameters can be configured from [sonar-project.properties](sonar-project.properties) as shown below:
-
-```
-sonar.login=admin
-sonar.password=admin
-```
-
-For more information, refer to the [Code quality page][].
-
-### Docker Compose support
-
-JHipster generates a number of Docker Compose configuration files in the [src/main/docker/](src/main/docker/) folder to launch required third party services.
-
-For example, to start required services in Docker containers, run:
-
-```
-docker compose -f src/main/docker/services.yml up -d
-```
-
-To stop and remove the containers, run:
-
-```
-docker compose -f src/main/docker/services.yml down
-```
-
-[Spring Docker Compose Integration](https://docs.spring.io/spring-boot/reference/features/dev-services.html) is enabled by default. It's possible to disable it in application.yml:
+**Development (H2 in-memory)**
 
 ```yaml
 spring:
-  ...
-  docker:
-    compose:
-      enabled: false
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
 ```
 
-You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a Docker image of your app by running:
+**Production (PostgreSQL)**
 
-```sh
-npm run java:docker
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gallerydb
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 ```
 
-Or build a arm64 Docker image when using an arm64 processor os like MacOS with M1 processor family running:
+### JHipster Configuration
 
-```sh
-npm run java:docker:arm64
+Key JHipster configuration options:
+
+- **Authentication**: JWT-based
+- **Database**: H2 (dev), PostgreSQL (prod)
+- **Build Tool**: Maven
+- **Frontend**: React with TypeScript
+- **Testing**: Jest + Cypress
+- **Internationalization**: Enabled
+- **API Documentation**: OpenAPI/Swagger
+
+## 📈 Performance Optimizations
+
+### Frontend Optimizations
+
+- **Code Splitting**: Lazy loading of routes and components
+- **Image Optimization**: Responsive images with proper sizing
+- **Bundle Optimization**: Tree shaking and minification
+- **Caching**: Browser caching for static assets
+- **Virtual Scrolling**: For large album lists (coming soon)
+
+### Backend Optimizations
+
+- **Database Indexing**: Optimized queries with proper indexes
+- **Pagination**: Efficient data loading
+- **Caching**: Spring Cache for frequently accessed data
+- **Connection Pooling**: Optimized database connections
+- **Query Optimization**: JPA query optimization
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Secure token-based authentication
+- **CORS Configuration**: Proper cross-origin resource sharing
+- **Input Validation**: Server-side validation for all inputs
+- **SQL Injection Prevention**: Parameterized queries
+- **XSS Protection**: Output encoding and sanitization
+
+## 🌍 Internationalization
+
+The application supports multiple languages:
+
+- **English** (default)
+- **Additional languages** can be added via JHipster i18n
+
+Translation keys are organized by feature:
+
+```
+gallerySystemApp.album.gallery.title
+gallerySystemApp.album.gallery.search
+gallerySystemApp.album.gallery.filters
 ```
 
-Then run:
+## 🚀 Deployment
 
-```sh
-docker compose -f src/main/docker/app.yml up -d
+### Docker Deployment
+
+```bash
+# Build Docker image
+./mvnw clean package -Pprod jib:dockerBuild
+
+# Run with Docker Compose
+docker-compose up
 ```
 
-For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the Docker Compose sub-generator (`jhipster docker-compose`), which is able to generate Docker configurations for one or several JHipster applications.
+### Cloud Deployment
 
-## Continuous Integration (optional)
+The application is ready for deployment on:
 
-To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
+- **Heroku**: With buildpacks for Java and Node.js
+- **AWS**: EC2, ECS, or Elastic Beanstalk
+- **Google Cloud**: App Engine or Compute Engine
+- **Azure**: App Service or Container Instances
 
-[JHipster Homepage and latest documentation]: https://www.jhipster.tech
-[JHipster 8.10.0 archive]: https://www.jhipster.tech/documentation-archive/v8.10.0
-[Using JHipster in development]: https://www.jhipster.tech/documentation-archive/v8.10.0/development/
-[Using Docker and Docker-Compose]: https://www.jhipster.tech/documentation-archive/v8.10.0/docker-compose
-[Using JHipster in production]: https://www.jhipster.tech/documentation-archive/v8.10.0/production/
-[Running tests page]: https://www.jhipster.tech/documentation-archive/v8.10.0/running-tests/
-[Code quality page]: https://www.jhipster.tech/documentation-archive/v8.10.0/code-quality/
-[Setting up Continuous Integration]: https://www.jhipster.tech/documentation-archive/v8.10.0/setting-up-ci/
-[Node.js]: https://nodejs.org/
-[NPM]: https://www.npmjs.com/
-[Gatling]: https://gatling.io/
-[Webpack]: https://webpack.github.io/
-[BrowserSync]: https://www.browsersync.io/
-[Jest]: https://jestjs.io
-[Cypress]: https://www.cypress.io/
-[Leaflet]: https://leafletjs.com/
-[DefinitelyTyped]: https://definitelytyped.org/
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+
+- Follow the existing code style and conventions
+- Add tests for new features
+- Update documentation as needed
+- Use meaningful commit messages
+- Ensure all tests pass before submitting PR
+
+## 📝 License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **JHipster**: Application generator and framework
+- **Spring Boot**: Backend framework
+- **React**: Frontend framework
+- **Bootstrap**: CSS framework
+- **FontAwesome**: Icon library
+
+---
+
+## 📞 Support
+
+For support and questions:
+
+1. Check the [FAQ](docs/FAQ.md)
+2. Review [troubleshooting guide](docs/TROUBLESHOOTING.md)
+3. Open an issue on GitHub
+4. Contact the development team
+
+**Happy coding! 🎉**

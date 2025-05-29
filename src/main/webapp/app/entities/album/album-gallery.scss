@@ -5,13 +5,34 @@
 
   .gallery-header {
     .gallery-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #495057;
+      color: #2c3e50;
+      font-weight: 600;
       margin-bottom: 0.5rem;
+    }
 
-      @media (max-width: 768px) {
-        font-size: 2rem;
+    .stats-card {
+      transition: transform 0.2s ease;
+      border-radius: 8px;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-body {
+        padding: 1rem;
+      }
+    }
+
+    .action-buttons {
+      .btn {
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+          transform: translateY(-1px);
+        }
       }
     }
   }
@@ -64,24 +85,41 @@
   }
 
   .album-card {
-    transition: all 0.3s ease;
     border: none;
-    border-radius: 15px;
+    border-radius: 12px;
     overflow: hidden;
-    background: white;
-    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: #fff;
 
     &:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
 
-      .album-overlay {
-        opacity: 1;
-        visibility: visible;
+    &.selected {
+      border: 2px solid #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    &.list-view {
+      .album-thumbnail-container {
+        height: 120px;
+        overflow: hidden;
       }
 
-      .album-thumbnail {
-        transform: scale(1.05);
+      .list-thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .album-info {
+        flex: 1;
+      }
+
+      .album-actions {
+        margin-left: 1rem;
       }
     }
 
@@ -89,17 +127,16 @@
       position: relative;
       overflow: hidden;
       height: 200px;
-      background: #f8f9fa;
 
       .album-thumbnail {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
+      }
 
-        &.default-thumbnail {
-          opacity: 0.7;
-        }
+      &:hover .album-thumbnail {
+        transform: scale(1.05);
       }
 
       .album-overlay {
@@ -108,41 +145,52 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.7) 100%);
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 1rem;
         opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
+        transition: opacity 0.3s ease;
 
-        .view-album-btn {
-          border-radius: 25px;
-          padding: 0.5rem 1.5rem;
-          font-weight: 500;
-          box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
-          border: none;
+        .overlay-actions {
+          display: flex;
+          gap: 0.5rem;
+        }
 
-          &:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
-          }
+        .photo-count-badge {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          font-size: 0.75rem;
+          font-weight: 600;
         }
       }
+
+      &:hover .album-overlay {
+        opacity: 1;
+      }
+    }
+
+    .default-thumbnail {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .card-body {
       padding: 1.25rem;
 
       .album-title {
-        font-size: 1.25rem;
+        font-size: 1.1rem;
         font-weight: 600;
         margin-bottom: 0.75rem;
         line-height: 1.3;
 
         a {
-          color: #495057;
-          text-decoration: none;
+          color: #2c3e50;
+          transition: color 0.2s ease;
 
           &:hover {
             color: #007bff;
@@ -150,16 +198,37 @@
         }
       }
 
-      .badge {
-        font-size: 0.75rem;
-        border-radius: 15px;
-        padding: 0.35rem 0.75rem;
+      .album-meta {
+        margin-bottom: 0.75rem;
+
+        .badge {
+          font-size: 0.75rem;
+          padding: 0.4rem 0.6rem;
+          border-radius: 6px;
+          font-weight: 500;
+        }
+      }
+
+      .album-tags {
+        .badge {
+          font-size: 0.7rem;
+          padding: 0.3rem 0.5rem;
+          border-radius: 4px;
+          font-weight: 500;
+        }
       }
 
       .album-date,
       .album-owner {
-        font-size: 0.875rem;
-        margin-bottom: 0.25rem;
+        font-size: 0.85rem;
+        color: #6c757d;
+      }
+
+      .album-description {
+        font-size: 0.8rem;
+        color: #868e96;
+        line-height: 1.4;
+        margin-top: 0.5rem;
       }
     }
   }
