@@ -6,6 +6,8 @@
 - done run prompt to update test case in src/test
 - done update performance testing in ci
 - can run ./mvnw gatling:test - to open gatling file .html
+- already update the user story
+- success in testing 
 
 # gallerySystem
 
