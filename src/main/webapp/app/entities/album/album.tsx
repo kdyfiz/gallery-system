@@ -137,6 +137,10 @@ export const Album = () => {
                   <Translate contentKey="gallerySystemApp.album.keywords">Keywords</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('keywords')} />
                 </th>
+                <th className="hand" onClick={sort('description')}>
+                  <Translate contentKey="gallerySystemApp.album.description">Description</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('description')} />
+                </th>
                 <th>
                   <Translate contentKey="gallerySystemApp.album.user">User</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
@@ -171,6 +175,7 @@ export const Album = () => {
                     ) : null}
                   </td>
                   <td>{album.keywords}</td>
+                  <td>{album.description}</td>
                   <td>{album.user ? album.user.login : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">

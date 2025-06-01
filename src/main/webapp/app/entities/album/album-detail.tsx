@@ -82,6 +82,12 @@ export const AlbumDetail = () => {
           </dt>
           <dd>{albumEntity.keywords}</dd>
           <dt>
+            <span id="description">
+              <Translate contentKey="gallerySystemApp.album.description">Description</Translate>
+            </span>
+          </dt>
+          <dd>{albumEntity.description}</dd>
+          <dt>
             <Translate contentKey="gallerySystemApp.album.user">User</Translate>
           </dt>
           <dd>{albumEntity.user ? albumEntity.user.login : ''}</dd>

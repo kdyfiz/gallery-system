@@ -28,37 +28,29 @@ export const getEntities = createAsyncThunk(
 );
 
 export const getGalleryEntities = createAsyncThunk(
-  'album/fetch_gallery_entities',
-  async ({ sortBy }: { sortBy: 'EVENT' | 'DATE' }) => {
-    const endpoint = sortBy === 'EVENT' ? 'by-event' : 'by-date';
-    const requestUrl = `${apiUrl}/${endpoint}?cacheBuster=${new Date().getTime()}`;
+  'album/fetch_gallery_entity_list',
+  async ({ sortBy }: { sortBy?: string }) => {
+    const requestUrl = `${apiUrl}/gallery?${sortBy ? `sortBy=${sortBy}&` : ''}cacheBuster=${new Date().getTime()}`;
     return axios.get<IAlbum[]>(requestUrl);
   },
   { serializeError: serializeAxiosError },
 );
 
 export const searchAndFilterAlbums = createAsyncThunk(
-  'album/search_and_filter',
-  async (params: {
-    keyword?: string;
-    event?: string;
-    year?: number;
-    tagName?: string;
-    contributorLogin?: string;
-    sortBy?: 'EVENT' | 'DATE';
-  }) => {
-    const queryParams = new URLSearchParams();
+  'album/search_and_filter_albums',
+  async (filters: { keyword?: string; event?: string; year?: number; tagName?: string; contributorLogin?: string; sortBy?: string }) => {
+    const params = new URLSearchParams();
 
-    if (params.keyword) queryParams.append('keyword', params.keyword);
-    if (params.event) queryParams.append('event', params.event);
-    if (params.year) queryParams.append('year', params.year.toString());
-    if (params.tagName) queryParams.append('tagName', params.tagName);
-    if (params.contributorLogin) queryParams.append('contributorLogin', params.contributorLogin);
-    if (params.sortBy) queryParams.append('sortBy', params.sortBy.toLowerCase());
+    if (filters.keyword) params.append('keyword', filters.keyword);
+    if (filters.event) params.append('event', filters.event);
+    if (filters.year) params.append('year', filters.year.toString());
+    if (filters.tagName) params.append('tagName', filters.tagName);
+    if (filters.contributorLogin) params.append('contributorLogin', filters.contributorLogin);
+    if (filters.sortBy) params.append('sortBy', filters.sortBy);
 
-    queryParams.append('cacheBuster', new Date().getTime().toString());
+    params.append('cacheBuster', new Date().getTime().toString());
 
-    const requestUrl = `${apiUrl}/filter?${queryParams.toString()}`;
+    const requestUrl = `${apiUrl}/search?${params.toString()}`;
     return axios.get<IAlbum[]>(requestUrl);
   },
   { serializeError: serializeAxiosError },
@@ -130,7 +122,7 @@ export const AlbumSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addMatcher(isFulfilled(getEntities), (state, action) => {
+      .addMatcher(isFulfilled(getEntities, getGalleryEntities, searchAndFilterAlbums), (state, action) => {
         const { data, headers } = action.payload;
 
         return {
@@ -140,28 +132,13 @@ export const AlbumSlice = createEntitySlice({
           totalItems: parseInt(headers['x-total-count'], 10),
         };
       })
-      .addMatcher(isFulfilled(getGalleryEntities, searchAndFilterAlbums), (state, action) => {
-        const { data, headers } = action.payload;
-
-        return {
-          ...state,
-          loading: false,
-          entities: data,
-          totalItems: headers ? parseInt(headers['x-total-count'], 10) : data.length,
-        };
-      })
       .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {
         state.updating = false;
         state.loading = false;
         state.updateSuccess = true;
         state.entity = action.payload.data;
       })
-      .addMatcher(isPending(getEntities, getEntity), state => {
-        state.errorMessage = null;
-        state.updateSuccess = false;
-        state.loading = true;
-      })
-      .addMatcher(isPending(getGalleryEntities, searchAndFilterAlbums), state => {
+      .addMatcher(isPending(getEntities, getEntity, getGalleryEntities, searchAndFilterAlbums), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;

@@ -52,18 +52,18 @@ search Album, Photo with elasticsearch
 /** ===================
   User Story Alignment: "View and Filter Gallery Albums"
   ===================
-  ✅ Added Photo entity: to store individual photos within albums.
-  ✅ Added Tag entity: to enable filtering albums and photos by tags.
-  ✅ Added ManyToMany relationship between Album and Tag: to support multiple tags per album.
-  ✅ Added ManyToMany relationship between Photo and Tag: to support multiple tags per photo.
-  ✅ Added ManyToOne relationship between Photo and Album: photos belong to albums.
-  ✅ Added optional `keywords` field to Album and Photo: enables searching by keyword.
-  ✅ Added `description` field to Album: for additional album information.
-  ✅ Added FilterType enum: to support different filter types (TAG, EVENT, YEAR, CONTRIBUTOR).
-  ✅ Added elasticsearch search: enables full-text search on albums and photos.
-  ✅ Reused existing `event` field: allows sorting and filtering by event.
-  ✅ Reused existing `creationDate` and `overrideDate`: enables chronological sorting and admin overrides.
-  ✅ Reused relationship with User: enables filtering albums by contributor.
-  ✅ Added inline comments to explain field purposes.
-  ✅ Added pagination and service layers for all entities.
+  Added Photo entity: to store individual photos within albums.
+  Added Tag entity: to enable filtering albums and photos by tags.
+  Added ManyToMany relationship between Album and Tag: to support multiple tags per album.
+  Added ManyToMany relationship between Photo and Tag: to support multiple tags per photo.
+  Added ManyToOne relationship between Photo and Album: photos belong to albums.
+  Added optional `keywords` field to Album and Photo: enables searching by keyword.
+  Added `description` field to Album: for additional album information.
+  Added FilterType enum: to support different filter types (TAG, EVENT, YEAR, CONTRIBUTOR).
+  Added elasticsearch search: enables full-text search on albums and photos.
+  Reused existing `event` field: allows sorting and filtering by event.
+  Reused existing `creationDate` and `overrideDate`: enables chronological sorting and admin overrides.
+  Reused relationship with User: enables filtering albums by contributor.
+  Added inline comments to explain field purposes.
+  Added pagination and service layers for all entities.
 */
