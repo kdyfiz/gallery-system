@@ -3,8 +3,13 @@ import { createAsyncThunk, isFulfilled, isPending } from '@reduxjs/toolkit';
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { IAlbum, defaultValue } from 'app/shared/model/album.model';
+import { IAlbumFilterOptions, defaultFilterOptions } from 'app/shared/model/album-filter-options.model';
 
-const initialState: EntityState<IAlbum> = {
+interface AlbumState extends EntityState<IAlbum> {
+  filterOptions: IAlbumFilterOptions;
+}
+
+const initialState: AlbumState = {
   loading: false,
   errorMessage: null,
   entities: [],
@@ -12,6 +17,7 @@ const initialState: EntityState<IAlbum> = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
+  filterOptions: defaultFilterOptions,
 };
 
 const apiUrl = 'api/albums';
@@ -52,6 +58,15 @@ export const searchAndFilterAlbums = createAsyncThunk(
 
     const requestUrl = `${apiUrl}/search?${params.toString()}`;
     return axios.get<IAlbum[]>(requestUrl);
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const getFilterOptions = createAsyncThunk(
+  'album/fetch_filter_options',
+  async () => {
+    const requestUrl = `${apiUrl}/filter-options?cacheBuster=${new Date().getTime()}`;
+    return axios.get<IAlbumFilterOptions>(requestUrl);
   },
   { serializeError: serializeAxiosError },
 );
@@ -111,6 +126,11 @@ export const deleteEntity = createAsyncThunk(
 export const AlbumSlice = createEntitySlice({
   name: 'album',
   initialState,
+  reducers: {
+    setFilterOptions(state, action) {
+      (state as any).filterOptions = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(getEntity.fulfilled, (state, action) => {
@@ -121,6 +141,10 @@ export const AlbumSlice = createEntitySlice({
         state.updating = false;
         state.updateSuccess = true;
         state.entity = {};
+      })
+      .addCase(getFilterOptions.fulfilled, (state, action) => {
+        state.loading = false;
+        AlbumSlice.caseReducers.setFilterOptions(state as any, { payload: action.payload.data, type: 'setFilterOptions' });
       })
       .addMatcher(isFulfilled(getEntities, getGalleryEntities, searchAndFilterAlbums), (state, action) => {
         const { data, headers } = action.payload;
@@ -138,7 +162,7 @@ export const AlbumSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = action.payload.data;
       })
-      .addMatcher(isPending(getEntities, getEntity, getGalleryEntities, searchAndFilterAlbums), state => {
+      .addMatcher(isPending(getEntities, getEntity, getGalleryEntities, searchAndFilterAlbums, getFilterOptions), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
@@ -151,7 +175,7 @@ export const AlbumSlice = createEntitySlice({
   },
 });
 
-export const { reset } = AlbumSlice.actions;
+export const { reset, setFilterOptions } = AlbumSlice.actions;
 
 // Reducer
 export default AlbumSlice.reducer;

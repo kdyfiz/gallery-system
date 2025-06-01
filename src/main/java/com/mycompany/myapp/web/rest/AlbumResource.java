@@ -3,6 +3,7 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.repository.AlbumRepository;
 import com.mycompany.myapp.service.AlbumService;
 import com.mycompany.myapp.service.dto.AlbumDTO;
+import com.mycompany.myapp.service.dto.AlbumFilterOptionsDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -76,7 +77,7 @@ public class AlbumResource {
      * or with status {@code 500 (Internal Server Error)} if the albumDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/{id}")
+    @PutMapping("/{id:[0-9]+}")
     public ResponseEntity<AlbumDTO> updateAlbum(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody AlbumDTO albumDTO
@@ -110,7 +111,7 @@ public class AlbumResource {
      * or with status {@code 500 (Internal Server Error)} if the albumDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id:[0-9]+}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<AlbumDTO> partialUpdateAlbum(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody AlbumDTO albumDTO
@@ -159,12 +160,72 @@ public class AlbumResource {
     }
 
     /**
+     * {@code GET  /albums/gallery} : get all albums for gallery view with sorting.
+     *
+     * @param sortBy the sort criteria (EVENT or DATE).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of albums in body.
+     */
+    @GetMapping("/gallery")
+    public ResponseEntity<List<AlbumDTO>> getGalleryAlbums(
+        @RequestParam(name = "sortBy", required = false, defaultValue = "EVENT") String sortBy
+    ) {
+        LOG.debug("REST request to get Albums for gallery view with sort: {}", sortBy);
+        List<AlbumDTO> albums = albumService.findAllForGallery(sortBy);
+        return ResponseEntity.ok().body(albums);
+    }
+
+    /**
+     * {@code GET  /albums/search} : search and filter albums.
+     *
+     * @param keyword the keyword to search in name, description, and keywords.
+     * @param event the event name to filter by.
+     * @param year the year to filter by.
+     * @param tagName the tag name to filter by.
+     * @param contributorLogin the contributor login to filter by.
+     * @param sortBy the sort criteria (EVENT or DATE).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of filtered albums in body.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<AlbumDTO>> searchAndFilterAlbums(
+        @RequestParam(name = "keyword", required = false) String keyword,
+        @RequestParam(name = "event", required = false) String event,
+        @RequestParam(name = "year", required = false) Integer year,
+        @RequestParam(name = "tagName", required = false) String tagName,
+        @RequestParam(name = "contributorLogin", required = false) String contributorLogin,
+        @RequestParam(name = "sortBy", required = false, defaultValue = "EVENT") String sortBy
+    ) {
+        LOG.debug(
+            "REST request to search and filter Albums with keyword: {}, event: {}, year: {}, tagName: {}, contributorLogin: {}, sortBy: {}",
+            keyword,
+            event,
+            year,
+            tagName,
+            contributorLogin,
+            sortBy
+        );
+        List<AlbumDTO> albums = albumService.searchAndFilter(keyword, event, year, tagName, contributorLogin, sortBy);
+        return ResponseEntity.ok().body(albums);
+    }
+
+    /**
+     * {@code GET  /albums/filter-options} : get available filter options.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and filter options in body.
+     */
+    @GetMapping("/filter-options")
+    public ResponseEntity<AlbumFilterOptionsDTO> getFilterOptions() {
+        LOG.debug("REST request to get Album filter options");
+        AlbumFilterOptionsDTO filterOptions = albumService.getFilterOptions();
+        return ResponseEntity.ok().body(filterOptions);
+    }
+
+    /**
      * {@code GET  /albums/:id} : get the "id" album.
      *
      * @param id the id of the albumDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the albumDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public ResponseEntity<AlbumDTO> getAlbum(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Album : {}", id);
         Optional<AlbumDTO> albumDTO = albumService.findOne(id);
@@ -177,7 +238,7 @@ public class AlbumResource {
      * @param id the id of the albumDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id:[0-9]+}")
     public ResponseEntity<Void> deleteAlbum(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Album : {}", id);
         albumService.delete(id);

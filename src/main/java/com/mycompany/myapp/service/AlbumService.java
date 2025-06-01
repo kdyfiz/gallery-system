@@ -3,7 +3,9 @@ package com.mycompany.myapp.service;
 import com.mycompany.myapp.domain.Album;
 import com.mycompany.myapp.repository.AlbumRepository;
 import com.mycompany.myapp.service.dto.AlbumDTO;
+import com.mycompany.myapp.service.dto.AlbumFilterOptionsDTO;
 import com.mycompany.myapp.service.mapper.AlbumMapper;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +97,75 @@ public class AlbumService {
      */
     public Page<AlbumDTO> findAllWithEagerRelationships(Pageable pageable) {
         return albumRepository.findAllWithEagerRelationships(pageable).map(albumMapper::toDto);
+    }
+
+    /**
+     * Get all albums for gallery view with sorting.
+     *
+     * @param sortBy the sort criteria (EVENT or DATE).
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<AlbumDTO> findAllForGallery(String sortBy) {
+        LOG.debug("Request to get all Albums for gallery with sort: {}", sortBy);
+        List<Album> albums;
+        if ("DATE".equalsIgnoreCase(sortBy)) {
+            albums = albumRepository.findAllOrderByCreationDateDesc();
+        } else {
+            albums = albumRepository.findAllOrderByEventAsc();
+        }
+        return albums.stream().map(albumMapper::toDto).toList();
+    }
+
+    /**
+     * Search and filter albums based on various criteria.
+     *
+     * @param keyword the keyword to search in name, description, and keywords.
+     * @param event the event name to filter by.
+     * @param year the year to filter by.
+     * @param tagName the tag name to filter by.
+     * @param contributorLogin the contributor login to filter by.
+     * @param sortBy the sort criteria (EVENT or DATE).
+     * @return the list of filtered entities.
+     */
+    @Transactional(readOnly = true)
+    public List<AlbumDTO> searchAndFilter(
+        String keyword,
+        String event,
+        Integer year,
+        String tagName,
+        String contributorLogin,
+        String sortBy
+    ) {
+        LOG.debug(
+            "Request to search and filter Albums with keyword: {}, event: {}, year: {}, tagName: {}, contributorLogin: {}, sortBy: {}",
+            keyword,
+            event,
+            year,
+            tagName,
+            contributorLogin,
+            sortBy
+        );
+
+        List<Album> albums = albumRepository.searchAndFilter(keyword, event, year, tagName, contributorLogin, sortBy);
+        return albums.stream().map(albumMapper::toDto).toList();
+    }
+
+    /**
+     * Get available filter options from existing albums.
+     *
+     * @return the filter options DTO.
+     */
+    @Transactional(readOnly = true)
+    public AlbumFilterOptionsDTO getFilterOptions() {
+        LOG.debug("Request to get Album filter options");
+
+        List<String> events = albumRepository.findDistinctEvents();
+        List<Integer> years = albumRepository.findDistinctYears();
+        List<String> tags = albumRepository.findDistinctTagNames();
+        List<String> contributors = albumRepository.findDistinctContributors();
+
+        return new AlbumFilterOptionsDTO(events, years, tags, contributors);
     }
 
     /**

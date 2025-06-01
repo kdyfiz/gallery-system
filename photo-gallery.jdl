@@ -50,7 +50,7 @@ dto Album, Photo, Tag with mapstruct
 search Album, Photo with elasticsearch
 
 /** ===================
-  User Story Alignment: "View and Filter Gallery Albums"
+  User Story what new was added : "View and Filter Gallery Albums"
   ===================
   Added Photo entity: to store individual photos within albums.
   Added Tag entity: to enable filtering albums and photos by tags.

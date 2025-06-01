@@ -57,10 +57,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { APP_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getGalleryEntities, searchAndFilterAlbums } from './album.reducer';
+import { getGalleryEntities, searchAndFilterAlbums, getFilterOptions } from './album.reducer';
+import { AlbumSort } from 'app/shared/model/enumerations/album-sort.model';
+import { FilterType } from 'app/shared/model/enumerations/filter-type.model';
+import { IAlbumFilterOptions } from 'app/shared/model/album-filter-options.model';
 import './album-gallery.scss';
 
-export type AlbumSortType = 'EVENT' | 'DATE';
 export type ViewMode = 'grid' | 'list' | 'masonry';
 
 interface FilterCriteria {
@@ -84,7 +86,7 @@ export const AlbumGallery = () => {
   const navigate = useNavigate();
 
   // Core state
-  const [sortType, setSortType] = useState<AlbumSortType>('EVENT');
+  const [sortType, setSortType] = useState<AlbumSort>(AlbumSort.EVENT);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -101,6 +103,12 @@ export const AlbumGallery = () => {
   const albumList = useAppSelector(state => state.album.entities);
   const loading = useAppSelector(state => state.album.loading);
   const totalItems = useAppSelector(state => state.album.totalItems);
+  const filterOptions = useAppSelector(state => state.album.filterOptions) || {
+    events: [],
+    years: [],
+    tags: [],
+    contributors: [],
+  };
 
   // Computed values
   const albumStats = useMemo<AlbumStats>(() => {
@@ -122,6 +130,8 @@ export const AlbumGallery = () => {
 
   useEffect(() => {
     loadAlbums();
+    // Fetch filter options on component mount
+    dispatch(getFilterOptions());
   }, [dispatch, sortType, filters]);
 
   useEffect(() => {
@@ -149,7 +159,7 @@ export const AlbumGallery = () => {
     }
   };
 
-  const handleSortChange = (newSortType: AlbumSortType) => {
+  const handleSortChange = (newSortType: AlbumSort) => {
     setSortType(newSortType);
   };
 
@@ -203,7 +213,7 @@ export const AlbumGallery = () => {
   const getGroupedAlbums = () => {
     if (!albumList || albumList.length === 0) return {};
 
-    if (sortType === 'EVENT') {
+    if (sortType === AlbumSort.EVENT) {
       const grouped = albumList.reduce(
         (acc, album) => {
           const eventKey = album.event && album.event.trim() !== '' ? album.event : 'Miscellaneous';
@@ -625,13 +635,19 @@ export const AlbumGallery = () => {
                       <Translate contentKey="gallerySystemApp.album.gallery.filterByEvent">Event</Translate>
                     </Label>
                     <Input
-                      type="text"
+                      type="select"
                       id="eventFilter"
-                      placeholder="Filter by event name..."
                       value={filters.event || ''}
                       onChange={e => handleFilterChange('event', e.target.value)}
                       data-testid="event-filter-input"
-                    />
+                    >
+                      <option value="">All Events</option>
+                      {filterOptions?.events?.map(event => (
+                        <option key={event} value={event}>
+                          {event}
+                        </option>
+                      ))}
+                    </Input>
                   </FormGroup>
                 </Col>
                 <Col lg={3} md={6}>
@@ -641,13 +657,19 @@ export const AlbumGallery = () => {
                       <Translate contentKey="gallerySystemApp.album.gallery.filterByYear">Year</Translate>
                     </Label>
                     <Input
-                      type="number"
+                      type="select"
                       id="yearFilter"
-                      placeholder="Filter by year..."
                       value={filters.year || ''}
                       onChange={e => handleFilterChange('year', e.target.value ? parseInt(e.target.value, 10) : undefined)}
                       data-testid="year-filter-input"
-                    />
+                    >
+                      <option value="">All Years</option>
+                      {filterOptions?.years?.map(year => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </Input>
                   </FormGroup>
                 </Col>
                 <Col lg={3} md={6}>
@@ -657,13 +679,19 @@ export const AlbumGallery = () => {
                       <Translate contentKey="gallerySystemApp.album.gallery.filterByTag">Tag</Translate>
                     </Label>
                     <Input
-                      type="text"
+                      type="select"
                       id="tagFilter"
-                      placeholder="Filter by tag name..."
                       value={filters.tagName || ''}
                       onChange={e => handleFilterChange('tagName', e.target.value)}
                       data-testid="tag-filter-input"
-                    />
+                    >
+                      <option value="">All Tags</option>
+                      {filterOptions?.tags?.map(tag => (
+                        <option key={tag} value={tag}>
+                          {tag}
+                        </option>
+                      ))}
+                    </Input>
                   </FormGroup>
                 </Col>
                 <Col lg={3} md={6}>
@@ -673,13 +701,19 @@ export const AlbumGallery = () => {
                       <Translate contentKey="gallerySystemApp.album.gallery.filterByContributor">Contributor</Translate>
                     </Label>
                     <Input
-                      type="text"
+                      type="select"
                       id="contributorFilter"
-                      placeholder="Filter by contributor..."
                       value={filters.contributorLogin || ''}
                       onChange={e => handleFilterChange('contributorLogin', e.target.value)}
                       data-testid="contributor-filter-input"
-                    />
+                    >
+                      <option value="">All Contributors</option>
+                      {filterOptions?.contributors?.map(contributor => (
+                        <option key={contributor} value={contributor}>
+                          {contributor}
+                        </option>
+                      ))}
+                    </Input>
                   </FormGroup>
                 </Col>
               </Row>
@@ -700,8 +734,8 @@ export const AlbumGallery = () => {
                 </span>
                 <ButtonGroup>
                   <Button
-                    color={sortType === 'EVENT' ? 'primary' : 'outline-primary'}
-                    onClick={() => handleSortChange('EVENT')}
+                    color={sortType === AlbumSort.EVENT ? 'primary' : 'outline-primary'}
+                    onClick={() => handleSortChange(AlbumSort.EVENT)}
                     size="sm"
                     data-testid="sort-by-event-btn"
                   >
@@ -709,8 +743,8 @@ export const AlbumGallery = () => {
                     <Translate contentKey="gallerySystemApp.album.gallery.sortByEvent">Event</Translate>
                   </Button>
                   <Button
-                    color={sortType === 'DATE' ? 'primary' : 'outline-primary'}
-                    onClick={() => handleSortChange('DATE')}
+                    color={sortType === AlbumSort.DATE ? 'primary' : 'outline-primary'}
+                    onClick={() => handleSortChange(AlbumSort.DATE)}
                     size="sm"
                     data-testid="sort-by-date-btn"
                   >
@@ -802,7 +836,7 @@ export const AlbumGallery = () => {
                           {groupedAlbums[groupKey].length} albums
                         </Badge>
                       </h3>
-                      {sortType === 'EVENT' && groupKey === 'Miscellaneous' && (
+                      {sortType === AlbumSort.EVENT && groupKey === 'Miscellaneous' && (
                         <p className="text-muted small mb-0">
                           <Translate contentKey="gallerySystemApp.album.gallery.miscellaneousDesc">
                             Albums without a specific event

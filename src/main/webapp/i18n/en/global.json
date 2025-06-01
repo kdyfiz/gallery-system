@@ -9,6 +9,7 @@
         "main": "Entities",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
         "album": "Album",
+        "albumGallery": "Photo Gallery",
         "tag": "Tag",
         "photo": "Photo"
       },

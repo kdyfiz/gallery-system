@@ -7,10 +7,12 @@ import Album from './album';
 import AlbumDetail from './album-detail';
 import AlbumUpdate from './album-update';
 import AlbumDeleteDialog from './album-delete-dialog';
+import AlbumGallery from './album-gallery';
 
 const AlbumRoutes = () => (
   <ErrorBoundaryRoutes>
     <Route index element={<Album />} />
+    <Route path="gallery" element={<AlbumGallery />} />
     <Route path="new" element={<AlbumUpdate />} />
     <Route path=":id">
       <Route index element={<AlbumDetail />} />

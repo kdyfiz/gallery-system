@@ -10,6 +10,9 @@ const EntitiesMenu = () => {
       <MenuItem icon="asterisk" to="/album">
         <Translate contentKey="global.menu.entities.album" />
       </MenuItem>
+      <MenuItem icon="image" to="/album-gallery">
+        <Translate contentKey="global.menu.entities.albumGallery" />
+      </MenuItem>
       <MenuItem icon="asterisk" to="/tag">
         <Translate contentKey="global.menu.entities.tag" />
       </MenuItem>
