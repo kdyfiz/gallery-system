@@ -10,39 +10,39 @@ import {
   entityTableSelector,
 } from '../../support/entity';
 
-describe('Tag e2e test', () => {
-  const tagPageUrl = '/tag';
-  const tagPageUrlPattern = new RegExp('/tag(\\?.*)?$');
+describe('Comment e2e test', () => {
+  const commentPageUrl = '/comment';
+  const commentPageUrlPattern = new RegExp('/comment(\\?.*)?$');
   const username = Cypress.env('E2E_USERNAME') ?? 'user';
   const password = Cypress.env('E2E_PASSWORD') ?? 'user';
-  const tagSample = { name: 'drat' };
+  const commentSample = { content: 'enormously', createdDate: '2025-06-01T13:21:44.747Z' };
 
-  let tag;
+  let comment;
 
   beforeEach(() => {
     cy.login(username, password);
   });
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/tags+(?*|)').as('entitiesRequest');
-    cy.intercept('POST', '/api/tags').as('postEntityRequest');
-    cy.intercept('DELETE', '/api/tags/*').as('deleteEntityRequest');
+    cy.intercept('GET', '/api/comments+(?*|)').as('entitiesRequest');
+    cy.intercept('POST', '/api/comments').as('postEntityRequest');
+    cy.intercept('DELETE', '/api/comments/*').as('deleteEntityRequest');
   });
 
   afterEach(() => {
-    if (tag) {
+    if (comment) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/tags/${tag.id}`,
+        url: `/api/comments/${comment.id}`,
       }).then(() => {
-        tag = undefined;
+        comment = undefined;
       });
     }
   });
 
-  it('Tags menu should load Tags page', () => {
+  it('Comments menu should load Comments page', () => {
     cy.visit('/');
-    cy.clickOnEntityMenuItem('tag');
+    cy.clickOnEntityMenuItem('comment');
     cy.wait('@entitiesRequest').then(({ response }) => {
       if (response?.body.length === 0) {
         cy.get(entityTableSelector).should('not.exist');
@@ -50,27 +50,27 @@ describe('Tag e2e test', () => {
         cy.get(entityTableSelector).should('exist');
       }
     });
-    cy.getEntityHeading('Tag').should('exist');
-    cy.url().should('match', tagPageUrlPattern);
+    cy.getEntityHeading('Comment').should('exist');
+    cy.url().should('match', commentPageUrlPattern);
   });
 
-  describe('Tag page', () => {
+  describe('Comment page', () => {
     describe('create button click', () => {
       beforeEach(() => {
-        cy.visit(tagPageUrl);
+        cy.visit(commentPageUrl);
         cy.wait('@entitiesRequest');
       });
 
-      it('should load create Tag page', () => {
+      it('should load create Comment page', () => {
         cy.get(entityCreateButtonSelector).click();
-        cy.url().should('match', new RegExp('/tag/new$'));
-        cy.getEntityCreateUpdateHeading('Tag');
+        cy.url().should('match', new RegExp('/comment/new$'));
+        cy.getEntityCreateUpdateHeading('Comment');
         cy.get(entityCreateSaveButtonSelector).should('exist');
         cy.get(entityCreateCancelButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', tagPageUrlPattern);
+        cy.url().should('match', commentPageUrlPattern);
       });
     });
 
@@ -78,65 +78,68 @@ describe('Tag e2e test', () => {
       beforeEach(() => {
         cy.authenticatedRequest({
           method: 'POST',
-          url: '/api/tags',
-          body: tagSample,
+          url: '/api/comments',
+          body: commentSample,
         }).then(({ body }) => {
-          tag = body;
+          comment = body;
 
           cy.intercept(
             {
               method: 'GET',
-              url: '/api/tags+(?*|)',
+              url: '/api/comments+(?*|)',
               times: 1,
             },
             {
               statusCode: 200,
-              body: [tag],
+              headers: {
+                link: '<http://localhost/api/comments?page=0&size=20>; rel="last",<http://localhost/api/comments?page=0&size=20>; rel="first"',
+              },
+              body: [comment],
             },
           ).as('entitiesRequestInternal');
         });
 
-        cy.visit(tagPageUrl);
+        cy.visit(commentPageUrl);
 
         cy.wait('@entitiesRequestInternal');
       });
 
-      it('detail button click should load details Tag page', () => {
+      it('detail button click should load details Comment page', () => {
         cy.get(entityDetailsButtonSelector).first().click();
-        cy.getEntityDetailsHeading('tag');
+        cy.getEntityDetailsHeading('comment');
         cy.get(entityDetailsBackButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', tagPageUrlPattern);
+        cy.url().should('match', commentPageUrlPattern);
       });
 
-      it('edit button click should load edit Tag page and go back', () => {
+      it('edit button click should load edit Comment page and go back', () => {
         cy.get(entityEditButtonSelector).first().click();
-        cy.getEntityCreateUpdateHeading('Tag');
+        cy.getEntityCreateUpdateHeading('Comment');
         cy.get(entityCreateSaveButtonSelector).should('exist');
         cy.get(entityCreateCancelButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', tagPageUrlPattern);
+        cy.url().should('match', commentPageUrlPattern);
       });
 
-      it('edit button click should load edit Tag page and save', () => {
+      it('edit button click should load edit Comment page and save', () => {
         cy.get(entityEditButtonSelector).first().click();
-        cy.getEntityCreateUpdateHeading('Tag');
+        cy.getEntityCreateUpdateHeading('Comment');
         cy.get(entityCreateSaveButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', tagPageUrlPattern);
+        cy.url().should('match', commentPageUrlPattern);
       });
 
-      it('last delete button click should delete instance of Tag', () => {
-        cy.intercept('GET', '/api/tags/*').as('dialogDeleteRequest');
+      it('last delete button click should delete instance of Comment', () => {
+        cy.intercept('GET', '/api/comments/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
         cy.wait('@dialogDeleteRequest');
-        cy.getEntityDeleteDialogHeading('tag').should('exist');
+        cy.getEntityDeleteDialogHeading('comment').should('exist');
         cy.get(entityConfirmDeleteButtonSelector).click();
         cy.wait('@deleteEntityRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(204);
@@ -144,34 +147,38 @@ describe('Tag e2e test', () => {
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response?.statusCode).to.equal(200);
         });
-        cy.url().should('match', tagPageUrlPattern);
+        cy.url().should('match', commentPageUrlPattern);
 
-        tag = undefined;
+        comment = undefined;
       });
     });
   });
 
-  describe('new Tag page', () => {
+  describe('new Comment page', () => {
     beforeEach(() => {
-      cy.visit(`${tagPageUrl}`);
+      cy.visit(`${commentPageUrl}`);
       cy.get(entityCreateButtonSelector).click();
-      cy.getEntityCreateUpdateHeading('Tag');
+      cy.getEntityCreateUpdateHeading('Comment');
     });
 
-    it('should create an instance of Tag', () => {
-      cy.get(`[data-cy="name"]`).type('angelic mmm');
-      cy.get(`[data-cy="name"]`).should('have.value', 'angelic mmm');
+    it('should create an instance of Comment', () => {
+      cy.get(`[data-cy="content"]`).type('valley bidet solution');
+      cy.get(`[data-cy="content"]`).should('have.value', 'valley bidet solution');
+
+      cy.get(`[data-cy="createdDate"]`).type('2025-06-01T21:00');
+      cy.get(`[data-cy="createdDate"]`).blur();
+      cy.get(`[data-cy="createdDate"]`).should('have.value', '2025-06-01T21:00');
 
       cy.get(entityCreateSaveButtonSelector).click();
 
       cy.wait('@postEntityRequest').then(({ response }) => {
         expect(response?.statusCode).to.equal(201);
-        tag = response.body;
+        comment = response.body;
       });
       cy.wait('@entitiesRequest').then(({ response }) => {
         expect(response?.statusCode).to.equal(200);
       });
-      cy.url().should('match', tagPageUrlPattern);
+      cy.url().should('match', commentPageUrlPattern);
     });
   });
 });

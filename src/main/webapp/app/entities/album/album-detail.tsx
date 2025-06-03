@@ -8,6 +8,7 @@ import { APP_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntity } from './album.reducer';
+import CommentSection from '../comment/comment-section';
 
 export const AlbumDetail = () => {
   const dispatch = useAppDispatch();
@@ -82,6 +83,12 @@ export const AlbumDetail = () => {
           </dt>
           <dd>{albumEntity.keywords}</dd>
           <dt>
+            <span id="description">
+              <Translate contentKey="gallerySystemApp.album.description">Description</Translate>
+            </span>
+          </dt>
+          <dd>{albumEntity.description}</dd>
+          <dt>
             <Translate contentKey="gallerySystemApp.album.user">User</Translate>
           </dt>
           <dd>{albumEntity.user ? albumEntity.user.login : ''}</dd>
@@ -112,6 +119,8 @@ export const AlbumDetail = () => {
             <Translate contentKey="entity.action.edit">Edit</Translate>
           </span>
         </Button>
+        {/* Comment Section */}
+        {albumEntity.id && <CommentSection albumId={albumEntity.id} albumName={albumEntity.name} />}
       </Col>
     </Row>
   );

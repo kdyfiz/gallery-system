@@ -10,7 +10,8 @@
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
         "album": "Album",
         "tag": "Tag",
-        "photo": "Photo"
+        "photo": "Photo",
+        "comment": "Comment"
       },
       "account": {
         "main": "Account",

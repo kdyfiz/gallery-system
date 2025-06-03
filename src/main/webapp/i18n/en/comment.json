@@ -1,0 +1,36 @@
+{
+  "gallerySystemApp": {
+    "comment": {
+      "home": {
+        "title": "Comments",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Comment",
+        "createOrEditLabel": "Create or edit a Comment",
+        "notFound": "No Comments found"
+      },
+      "section": {
+        "title": "Comments",
+        "addComment": "Add a comment",
+        "submit": "Submit Comment",
+        "loginRequired": "Please log in to leave a comment.",
+        "loading": "Loading comments...",
+        "noComments": "No comments yet. Be the first to leave a comment!"
+      },
+      "created": "A new Comment is created with identifier {{ param }}",
+      "updated": "A Comment is updated with identifier {{ param }}",
+      "deleted": "A Comment is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Comment {{ id }}?"
+      },
+      "detail": {
+        "title": "Comment"
+      },
+      "id": "ID",
+      "content": "Content",
+      "createdDate": "Created Date",
+      "author": "Author",
+      "album": "Album",
+      "photo": "Photo"
+    }
+  }
+}

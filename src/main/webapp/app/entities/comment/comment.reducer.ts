@@ -2,9 +2,9 @@ import axios from 'axios';
 import { createAsyncThunk, isFulfilled, isPending } from '@reduxjs/toolkit';
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { IAlbum, defaultValue } from 'app/shared/model/album.model';
+import { IComment, defaultValue } from 'app/shared/model/comment.model';
 
-const initialState: EntityState<IAlbum> = {
+const initialState: EntityState<IComment> = {
   loading: false,
   errorMessage: null,
   entities: [],
@@ -14,54 +14,50 @@ const initialState: EntityState<IAlbum> = {
   updateSuccess: false,
 };
 
-const apiUrl = 'api/albums';
+const apiUrl = 'api/comments';
 
 // Actions
 
 export const getEntities = createAsyncThunk(
-  'album/fetch_entity_list',
+  'comment/fetch_entity_list',
   async ({ page, size, sort }: IQueryParams) => {
     const requestUrl = `${apiUrl}?${sort ? `page=${page}&size=${size}&sort=${sort}&` : ''}cacheBuster=${new Date().getTime()}`;
-    return axios.get<IAlbum[]>(requestUrl);
+    return axios.get<IComment[]>(requestUrl);
   },
   { serializeError: serializeAxiosError },
 );
 
-export const getGalleryEntities = createAsyncThunk(
-  'album/fetch_gallery_entity_list',
-  async ({ sortBy }: { sortBy?: string }) => {
-    const sortParam = sortBy === 'EVENT' ? 'event,asc' : 'creationDate,desc';
-    const requestUrl = `${apiUrl}?sort=${sortParam}&cacheBuster=${new Date().getTime()}`;
-    return axios.get<IAlbum[]>(requestUrl);
+export const getEntitiesByAlbum = createAsyncThunk(
+  'comment/fetch_entity_list_by_album',
+  async (albumId: number) => {
+    const requestUrl = `${apiUrl}/album/${albumId}`;
+    return axios.get<IComment[]>(requestUrl);
   },
   { serializeError: serializeAxiosError },
 );
 
-export const searchAndFilterAlbums = createAsyncThunk(
-  'album/search_and_filter_albums',
-  async (filters: { keyword?: string; event?: string; year?: number; tagName?: string; contributorLogin?: string; sortBy?: string }) => {
-    // For now, just use the regular getEntities endpoint with sorting
-    // In the future, this can be enhanced with a proper search endpoint
-    const sortParam = filters.sortBy === 'EVENT' ? 'event,asc' : 'creationDate,desc';
-    const requestUrl = `${apiUrl}?sort=${sortParam}&cacheBuster=${new Date().getTime()}`;
-    return axios.get<IAlbum[]>(requestUrl);
+export const getEntitiesByPhoto = createAsyncThunk(
+  'comment/fetch_entity_list_by_photo',
+  async (photoId: number) => {
+    const requestUrl = `${apiUrl}/photo/${photoId}`;
+    return axios.get<IComment[]>(requestUrl);
   },
   { serializeError: serializeAxiosError },
 );
 
 export const getEntity = createAsyncThunk(
-  'album/fetch_entity',
+  'comment/fetch_entity',
   async (id: string | number) => {
     const requestUrl = `${apiUrl}/${id}`;
-    return axios.get<IAlbum>(requestUrl);
+    return axios.get<IComment>(requestUrl);
   },
   { serializeError: serializeAxiosError },
 );
 
 export const createEntity = createAsyncThunk(
-  'album/create_entity',
-  async (entity: IAlbum, thunkAPI) => {
-    const result = await axios.post<IAlbum>(apiUrl, cleanEntity(entity));
+  'comment/create_entity',
+  async (entity: IComment, thunkAPI) => {
+    const result = await axios.post<IComment>(apiUrl, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -69,9 +65,9 @@ export const createEntity = createAsyncThunk(
 );
 
 export const updateEntity = createAsyncThunk(
-  'album/update_entity',
-  async (entity: IAlbum, thunkAPI) => {
-    const result = await axios.put<IAlbum>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
+  'comment/update_entity',
+  async (entity: IComment, thunkAPI) => {
+    const result = await axios.put<IComment>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -79,9 +75,9 @@ export const updateEntity = createAsyncThunk(
 );
 
 export const partialUpdateEntity = createAsyncThunk(
-  'album/partial_update_entity',
-  async (entity: IAlbum, thunkAPI) => {
-    const result = await axios.patch<IAlbum>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
+  'comment/partial_update_entity',
+  async (entity: IComment, thunkAPI) => {
+    const result = await axios.patch<IComment>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -89,10 +85,10 @@ export const partialUpdateEntity = createAsyncThunk(
 );
 
 export const deleteEntity = createAsyncThunk(
-  'album/delete_entity',
+  'comment/delete_entity',
   async (id: string | number, thunkAPI) => {
     const requestUrl = `${apiUrl}/${id}`;
-    const result = await axios.delete<IAlbum>(requestUrl);
+    const result = await axios.delete<IComment>(requestUrl);
     thunkAPI.dispatch(getEntities({}));
     return result;
   },
@@ -101,8 +97,8 @@ export const deleteEntity = createAsyncThunk(
 
 // slice
 
-export const AlbumSlice = createEntitySlice({
-  name: 'album',
+export const CommentSlice = createEntitySlice({
+  name: 'comment',
   initialState,
   extraReducers(builder) {
     builder
@@ -115,14 +111,14 @@ export const AlbumSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addMatcher(isFulfilled(getEntities, getGalleryEntities, searchAndFilterAlbums), (state, action) => {
+      .addMatcher(isFulfilled(getEntities, getEntitiesByAlbum, getEntitiesByPhoto), (state, action) => {
         const { data, headers } = action.payload;
 
         return {
           ...state,
           loading: false,
-          entities: data,
-          totalItems: parseInt(headers['x-total-count'], 10),
+          entities: Array.isArray(data) ? data : [data],
+          totalItems: headers ? parseInt(headers['x-total-count'], 10) : data.length,
         };
       })
       .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {
@@ -131,7 +127,7 @@ export const AlbumSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = action.payload.data;
       })
-      .addMatcher(isPending(getEntities, getEntity, getGalleryEntities, searchAndFilterAlbums), state => {
+      .addMatcher(isPending(getEntities, getEntity, getEntitiesByAlbum, getEntitiesByPhoto), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
@@ -144,7 +140,7 @@ export const AlbumSlice = createEntitySlice({
   },
 });
 
-export const { reset } = AlbumSlice.actions;
+export const { reset } = CommentSlice.actions;
 
 // Reducer
-export default AlbumSlice.reducer;
+export default CommentSlice.reducer;

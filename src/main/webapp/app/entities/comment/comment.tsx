@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
-import { JhiItemCount, JhiPagination, TextFormat, Translate, byteSize, getPaginationState, openFile } from 'react-jhipster';
+import { JhiItemCount, JhiPagination, TextFormat, Translate, getPaginationState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 import { APP_DATE_FORMAT } from 'app/config/constants';
@@ -9,9 +9,9 @@ import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.cons
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-import { getEntities } from './album.reducer';
+import { getEntities } from './comment.reducer';
 
-export const Album = () => {
+export const Comment = () => {
   const dispatch = useAppDispatch();
 
   const pageLocation = useLocation();
@@ -21,9 +21,9 @@ export const Album = () => {
     overridePaginationStateWithQueryParams(getPaginationState(pageLocation, ITEMS_PER_PAGE, 'id'), pageLocation.search),
   );
 
-  const albumList = useAppSelector(state => state.album.entities);
-  const loading = useAppSelector(state => state.album.loading);
-  const totalItems = useAppSelector(state => state.album.totalItems);
+  const commentList = useAppSelector(state => state.comment.entities);
+  const loading = useAppSelector(state => state.comment.loading);
+  const totalItems = useAppSelector(state => state.comment.totalItems);
 
   const getAllEntities = () => {
     dispatch(
@@ -91,95 +91,64 @@ export const Album = () => {
 
   return (
     <div>
-      <h2 id="album-heading" data-cy="AlbumHeading">
-        <Translate contentKey="gallerySystemApp.album.home.title">Albums</Translate>
+      <h2 id="comment-heading" data-cy="CommentHeading">
+        <Translate contentKey="gallerySystemApp.comment.home.title">Comments</Translate>
         <div className="d-flex justify-content-end">
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="gallerySystemApp.album.home.refreshListLabel">Refresh List</Translate>
+            <Translate contentKey="gallerySystemApp.comment.home.refreshListLabel">Refresh List</Translate>
           </Button>
-          <Link to="/album/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+          <Link to="/comment/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
-            <Translate contentKey="gallerySystemApp.album.home.createLabel">Create new Album</Translate>
+            <Translate contentKey="gallerySystemApp.comment.home.createLabel">Create new Comment</Translate>
           </Link>
         </div>
       </h2>
       <div className="table-responsive">
-        {albumList && albumList.length > 0 ? (
+        {commentList && commentList.length > 0 ? (
           <Table responsive>
             <thead>
               <tr>
                 <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="gallerySystemApp.album.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
+                  <Translate contentKey="gallerySystemApp.comment.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
                 </th>
-                <th className="hand" onClick={sort('name')}>
-                  <Translate contentKey="gallerySystemApp.album.name">Name</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('name')} />
+                <th className="hand" onClick={sort('content')}>
+                  <Translate contentKey="gallerySystemApp.comment.content">Content</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('content')} />
                 </th>
-                <th className="hand" onClick={sort('event')}>
-                  <Translate contentKey="gallerySystemApp.album.event">Event</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('event')} />
-                </th>
-                <th className="hand" onClick={sort('creationDate')}>
-                  <Translate contentKey="gallerySystemApp.album.creationDate">Creation Date</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('creationDate')} />
-                </th>
-                <th className="hand" onClick={sort('overrideDate')}>
-                  <Translate contentKey="gallerySystemApp.album.overrideDate">Override Date</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('overrideDate')} />
-                </th>
-                <th className="hand" onClick={sort('thumbnail')}>
-                  <Translate contentKey="gallerySystemApp.album.thumbnail">Thumbnail</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('thumbnail')} />
-                </th>
-                <th className="hand" onClick={sort('keywords')}>
-                  <Translate contentKey="gallerySystemApp.album.keywords">Keywords</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('keywords')} />
-                </th>
-                <th className="hand" onClick={sort('description')}>
-                  <Translate contentKey="gallerySystemApp.album.description">Description</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('description')} />
+                <th className="hand" onClick={sort('createdDate')}>
+                  <Translate contentKey="gallerySystemApp.comment.createdDate">Created Date</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('createdDate')} />
                 </th>
                 <th>
-                  <Translate contentKey="gallerySystemApp.album.user">User</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="gallerySystemApp.comment.author">Author</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th>
+                  <Translate contentKey="gallerySystemApp.comment.album">Album</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th>
+                  <Translate contentKey="gallerySystemApp.comment.photo">Photo</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th />
               </tr>
             </thead>
             <tbody>
-              {albumList.map((album, i) => (
+              {commentList.map((comment, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
                   <td>
-                    <Button tag={Link} to={`/album/${album.id}`} color="link" size="sm">
-                      {album.id}
+                    <Button tag={Link} to={`/comment/${comment.id}`} color="link" size="sm">
+                      {comment.id}
                     </Button>
                   </td>
-                  <td>{album.name}</td>
-                  <td>{album.event}</td>
-                  <td>{album.creationDate ? <TextFormat type="date" value={album.creationDate} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{album.overrideDate ? <TextFormat type="date" value={album.overrideDate} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>
-                    {album.thumbnail ? (
-                      <div>
-                        {album.thumbnailContentType ? (
-                          <a onClick={openFile(album.thumbnailContentType, album.thumbnail)}>
-                            <img src={`data:${album.thumbnailContentType};base64,${album.thumbnail}`} style={{ maxHeight: '30px' }} />
-                            &nbsp;
-                          </a>
-                        ) : null}
-                        <span>
-                          {album.thumbnailContentType}, {byteSize(album.thumbnail)}
-                        </span>
-                      </div>
-                    ) : null}
-                  </td>
-                  <td>{album.keywords}</td>
-                  <td>{album.description}</td>
-                  <td>{album.user ? album.user.login : ''}</td>
+                  <td>{comment.content}</td>
+                  <td>{comment.createdDate ? <TextFormat type="date" value={comment.createdDate} format={APP_DATE_FORMAT} /> : null}</td>
+                  <td>{comment.author ? comment.author.login : ''}</td>
+                  <td>{comment.album ? <Link to={`/album/${comment.album.id}`}>{comment.album.name}</Link> : ''}</td>
+                  <td>{comment.photo ? <Link to={`/photo/${comment.photo.id}`}>{comment.photo.title}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
-                      <Button tag={Link} to={`/album/${album.id}`} color="info" size="sm" data-cy="entityDetailsButton">
+                      <Button tag={Link} to={`/comment/${comment.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
@@ -187,7 +156,7 @@ export const Album = () => {
                       </Button>
                       <Button
                         tag={Link}
-                        to={`/album/${album.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
+                        to={`/comment/${comment.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
                         color="primary"
                         size="sm"
                         data-cy="entityEditButton"
@@ -199,7 +168,7 @@ export const Album = () => {
                       </Button>
                       <Button
                         onClick={() =>
-                          (window.location.href = `/album/${album.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`)
+                          (window.location.href = `/comment/${comment.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`)
                         }
                         color="danger"
                         size="sm"
@@ -219,13 +188,13 @@ export const Album = () => {
         ) : (
           !loading && (
             <div className="alert alert-warning">
-              <Translate contentKey="gallerySystemApp.album.home.notFound">No Albums found</Translate>
+              <Translate contentKey="gallerySystemApp.comment.home.notFound">No Comments found</Translate>
             </div>
           )
         )}
       </div>
       {totalItems ? (
-        <div className={albumList && albumList.length > 0 ? '' : 'd-none'}>
+        <div className={commentList && commentList.length > 0 ? '' : 'd-none'}>
           <div className="justify-content-center d-flex">
             <JhiItemCount page={paginationState.activePage} total={totalItems} itemsPerPage={paginationState.itemsPerPage} i18nEnabled />
           </div>
@@ -246,4 +215,4 @@ export const Album = () => {
   );
 };
 
-export default Album;
+export default Comment;

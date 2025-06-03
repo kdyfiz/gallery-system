@@ -382,13 +382,7 @@ class PhotoResourceIT {
         Photo partialUpdatedPhoto = new Photo();
         partialUpdatedPhoto.setId(photo.getId());
 
-        partialUpdatedPhoto
-            .description(UPDATED_DESCRIPTION)
-            .image(UPDATED_IMAGE)
-            .imageContentType(UPDATED_IMAGE_CONTENT_TYPE)
-            .uploadDate(UPDATED_UPLOAD_DATE)
-            .captureDate(UPDATED_CAPTURE_DATE)
-            .location(UPDATED_LOCATION);
+        partialUpdatedPhoto.description(UPDATED_DESCRIPTION).keywords(UPDATED_KEYWORDS);
 
         restPhotoMockMvc
             .perform(

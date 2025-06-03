@@ -18,7 +18,7 @@ describe('Photo e2e test', () => {
   const photoSample = {
     image: 'Li4vZmFrZS1kYXRhL2Jsb2IvaGlwc3Rlci5wbmc=',
     imageContentType: 'unknown',
-    uploadDate: '2025-05-27T13:27:03.895Z',
+    uploadDate: '2025-05-28T00:35:44.351Z',
   };
 
   let photo;
@@ -166,27 +166,27 @@ describe('Photo e2e test', () => {
     });
 
     it('should create an instance of Photo', () => {
-      cy.get(`[data-cy="title"]`).type('whoa fooey');
-      cy.get(`[data-cy="title"]`).should('have.value', 'whoa fooey');
+      cy.get(`[data-cy="title"]`).type('pfft designation');
+      cy.get(`[data-cy="title"]`).should('have.value', 'pfft designation');
 
-      cy.get(`[data-cy="description"]`).type('amidst');
-      cy.get(`[data-cy="description"]`).should('have.value', 'amidst');
+      cy.get(`[data-cy="description"]`).type('bidet shiny beneficial');
+      cy.get(`[data-cy="description"]`).should('have.value', 'bidet shiny beneficial');
 
       cy.setFieldImageAsBytesOfEntity('image', 'integration-test.png', 'image/png');
 
-      cy.get(`[data-cy="uploadDate"]`).type('2025-05-27T08:53');
+      cy.get(`[data-cy="uploadDate"]`).type('2025-05-27T15:23');
       cy.get(`[data-cy="uploadDate"]`).blur();
-      cy.get(`[data-cy="uploadDate"]`).should('have.value', '2025-05-27T08:53');
+      cy.get(`[data-cy="uploadDate"]`).should('have.value', '2025-05-27T15:23');
 
-      cy.get(`[data-cy="captureDate"]`).type('2025-05-28T05:41');
+      cy.get(`[data-cy="captureDate"]`).type('2025-05-27T16:29');
       cy.get(`[data-cy="captureDate"]`).blur();
-      cy.get(`[data-cy="captureDate"]`).should('have.value', '2025-05-28T05:41');
+      cy.get(`[data-cy="captureDate"]`).should('have.value', '2025-05-27T16:29');
 
-      cy.get(`[data-cy="location"]`).type('pretend supposing');
-      cy.get(`[data-cy="location"]`).should('have.value', 'pretend supposing');
+      cy.get(`[data-cy="location"]`).type('abnormally assist amidst');
+      cy.get(`[data-cy="location"]`).should('have.value', 'abnormally assist amidst');
 
-      cy.get(`[data-cy="keywords"]`).type('patroller giant');
-      cy.get(`[data-cy="keywords"]`).should('have.value', 'patroller giant');
+      cy.get(`[data-cy="keywords"]`).type('fooey fearless');
+      cy.get(`[data-cy="keywords"]`).should('have.value', 'fooey fearless');
 
       // since cypress clicks submit too fast before the blob fields are validated
       cy.wait(200); // eslint-disable-line cypress/no-unnecessary-waiting

@@ -15,7 +15,7 @@ describe('Album e2e test', () => {
   const albumPageUrlPattern = new RegExp('/album(\\?.*)?$');
   const username = Cypress.env('E2E_USERNAME') ?? 'user';
   const password = Cypress.env('E2E_PASSWORD') ?? 'user';
-  const albumSample = { name: 'vast', creationDate: '2025-05-22T04:53:39.393Z' };
+  const albumSample = { name: 'majestically mathematics minus', creationDate: '2025-05-23T00:57:12.359Z' };
 
   let album;
 
@@ -162,24 +162,27 @@ describe('Album e2e test', () => {
     });
 
     it('should create an instance of Album', () => {
-      cy.get(`[data-cy="name"]`).type('thigh crooked');
-      cy.get(`[data-cy="name"]`).should('have.value', 'thigh crooked');
+      cy.get(`[data-cy="name"]`).type('joyful plagiarise');
+      cy.get(`[data-cy="name"]`).should('have.value', 'joyful plagiarise');
 
-      cy.get(`[data-cy="event"]`).type('eventually narrate');
-      cy.get(`[data-cy="event"]`).should('have.value', 'eventually narrate');
+      cy.get(`[data-cy="event"]`).type('blah');
+      cy.get(`[data-cy="event"]`).should('have.value', 'blah');
 
-      cy.get(`[data-cy="creationDate"]`).type('2025-05-22T10:24');
+      cy.get(`[data-cy="creationDate"]`).type('2025-05-22T14:51');
       cy.get(`[data-cy="creationDate"]`).blur();
-      cy.get(`[data-cy="creationDate"]`).should('have.value', '2025-05-22T10:24');
+      cy.get(`[data-cy="creationDate"]`).should('have.value', '2025-05-22T14:51');
 
-      cy.get(`[data-cy="overrideDate"]`).type('2025-05-22T02:30');
+      cy.get(`[data-cy="overrideDate"]`).type('2025-05-22T22:25');
       cy.get(`[data-cy="overrideDate"]`).blur();
-      cy.get(`[data-cy="overrideDate"]`).should('have.value', '2025-05-22T02:30');
+      cy.get(`[data-cy="overrideDate"]`).should('have.value', '2025-05-22T22:25');
 
       cy.setFieldImageAsBytesOfEntity('thumbnail', 'integration-test.png', 'image/png');
 
-      cy.get(`[data-cy="keywords"]`).type('out');
-      cy.get(`[data-cy="keywords"]`).should('have.value', 'out');
+      cy.get(`[data-cy="keywords"]`).type('once');
+      cy.get(`[data-cy="keywords"]`).should('have.value', 'once');
+
+      cy.get(`[data-cy="description"]`).type('../fake-data/blob/hipster.txt');
+      cy.get(`[data-cy="description"]`).invoke('val').should('match', new RegExp('../fake-data/blob/hipster.txt'));
 
       // since cypress clicks submit too fast before the blob fields are validated
       cy.wait(200); // eslint-disable-line cypress/no-unnecessary-waiting

@@ -8,6 +8,7 @@ import { APP_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntity } from './photo.reducer';
+import CommentSection from '../comment/comment-section';
 
 export const PhotoDetail = () => {
   const dispatch = useAppDispatch();
@@ -118,6 +119,8 @@ export const PhotoDetail = () => {
             <Translate contentKey="entity.action.edit">Edit</Translate>
           </span>
         </Button>
+        {/* Comment Section */}
+        {photoEntity.id && <CommentSection photoId={photoEntity.id} photoTitle={photoEntity.title} />}
       </Col>
     </Row>
   );

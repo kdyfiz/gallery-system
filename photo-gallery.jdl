@@ -1,25 +1,30 @@
 entity Album {
-  name String required minlength(3) maxlength(255),           // Album name
-  event String maxlength(255),                                // Optional event name
-  creationDate Instant required,                              // Album creation date
-  overrideDate Instant,                                       // Optional override for sorting
-  thumbnail ImageBlob,                                        // Album cover image
-  keywords String maxlength(500),                             // Keywords for searching albums
-  description TextBlob                                        // Album description
+  name String required minlength(3) maxlength(255),
+  event String maxlength(255),
+  creationDate Instant required,
+  overrideDate Instant,
+  thumbnail ImageBlob,
+  keywords String maxlength(500),
+  description TextBlob
 }
 
 entity Photo {
-  title String maxlength(255),                                // Photo title
-  description String maxlength(1000),                         // Photo description
-  image ImageBlob required,                                   // The actual photo
-  uploadDate Instant required,                                // When photo was uploaded
-  captureDate Instant,                                        // When photo was taken
-  location String maxlength(255),                             // Photo location
-  keywords String maxlength(500)                              // Keywords for searching photos
+  title String maxlength(255),
+  description String maxlength(1000),
+  image ImageBlob required,
+  uploadDate Instant required,
+  captureDate Instant,
+  location String maxlength(255),
+  keywords String maxlength(500)
 }
 
 entity Tag {
-  name String required minlength(2) maxlength(50) unique      // Tag name
+  name String required minlength(2) maxlength(50) unique
+}
+
+entity Comment {
+  content String required maxlength(1000),
+  createdDate Instant required
 }
 
 enum AlbumSort {
@@ -35,18 +40,19 @@ enum FilterType {
 }
 
 relationship ManyToOne {
-  Album{user(login)} to User with builtInEntity,              // Album owner/creator
-  Photo{album(name)} to Album{photos}                         // Photos belong to albums
+  Album{user(login)} to User with builtInEntity,
+  Photo{album(name)} to Album{photos},
+  Comment{author(login)} to User with builtInEntity,
+  Comment{album(name)} to Album,
+  Comment{photo(title)} to Photo
 }
 
 relationship ManyToMany {
-  Album{tags(name)} to Tag{albums},                           // Albums can have multiple tags
-  Photo{tags(name)} to Tag{photos}                            // Photos can have multiple tags
+  Album{tags(name)} to Tag{albums},
+  Photo{tags(name)} to Tag{photos}
 }
 
-paginate Album, Photo with pagination
-service Album, Photo, Tag with serviceClass
-dto Album, Photo, Tag with mapstruct
-search Album, Photo with elasticsearch
-
-
+paginate Album, Photo, Comment with pagination
+service Album, Photo, Tag, Comment with serviceClass
+dto Album, Photo, Tag, Comment with mapstruct
+search Album, Photo, Comment with elasticsearch

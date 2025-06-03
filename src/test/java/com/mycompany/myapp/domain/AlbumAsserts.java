@@ -55,7 +55,8 @@ public class AlbumAsserts {
             .satisfies(a ->
                 assertThat(a.getThumbnailContentType()).as("check thumbnail contenty type").isEqualTo(expected.getThumbnailContentType())
             )
-            .satisfies(a -> assertThat(a.getKeywords()).as("check keywords").isEqualTo(expected.getKeywords()));
+            .satisfies(a -> assertThat(a.getKeywords()).as("check keywords").isEqualTo(expected.getKeywords()))
+            .satisfies(a -> assertThat(a.getDescription()).as("check description").isEqualTo(expected.getDescription()));
     }
 
     /**

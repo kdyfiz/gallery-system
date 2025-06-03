@@ -58,6 +58,7 @@ public class CacheConfiguration {
             createCache(cm, com.mycompany.myapp.domain.Tag.class.getName() + ".photos");
             createCache(cm, com.mycompany.myapp.domain.Photo.class.getName());
             createCache(cm, com.mycompany.myapp.domain.Photo.class.getName() + ".tags");
+            createCache(cm, com.mycompany.myapp.domain.Comment.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }
