@@ -51,10 +51,15 @@ public class AlbumGatlingTest extends Simulation {
                 .headers(headersHttpAuthentication)
                 .body(StringBody("{\"username\":\"admin\", \"password\":\"admin\"}"))
                 .asJson()
+                .check(status().is(200))
                 .check(header("Authorization").saveAs("access_token"))
         )
         .exitHereIfFailed()
         .pause(2)
+        .exec(session -> {
+            System.out.println("Access token: " + session.getString("access_token"));
+            return session;
+        })
         .exec(http("Authenticated request").get("/api/account").headers(headersHttpAuthenticated).check(status().is(200)))
         .pause(10)
         .repeat(2)

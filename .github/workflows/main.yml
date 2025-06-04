@@ -33,6 +33,8 @@ jobs:
         with:
           name: gatling-report
           path: target/gatling/**
+      - name: Run cucumber tests
+        run: npm run ci:cucumber:test
       - name: Run frontend test
         run: npm run ci:frontend:test
       - name: Package application
