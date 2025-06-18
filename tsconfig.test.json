@@ -1,11 +1,14 @@
 {
   "extends": "./tsconfig",
-  "include": ["src/main/webapp/app", "src/main/webapp/microfrontends"],
-  "exclude": [],
+  "include": ["src/main/webapp/app/**/*", "src/test/javascript/**/*"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "app/*": ["src/main/webapp/app/*"]
     },
-    "types": ["jest", "webpack-env"]
+    "types": ["jest", "webpack-env", "@testing-library/jest-dom"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }

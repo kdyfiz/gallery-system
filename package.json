@@ -116,7 +116,9 @@
     "webstomp-client": "1.2.6"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.16",
     "@types/node": "20.11.25",
@@ -159,7 +161,7 @@
     "merge-jsons-webpack-plugin": "2.0.1",
     "mini-css-extract-plugin": "2.9.2",
     "postcss-loader": "8.1.1",
-    "prettier": "3.5.3",
+    "prettier": "^3.5.3",
     "prettier-plugin-java": "2.6.7",
     "prettier-plugin-packagejson": "2.5.10",
     "react-infinite-scroll-component": "6.1.0",

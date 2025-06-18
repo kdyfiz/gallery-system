@@ -1,3 +1,206 @@
 import { loadIcons } from './config/icon-loader';
+import { TranslatorContext } from 'react-jhipster';
 
+// Load icons
 loadIcons();
+
+// Register comprehensive translations for tests
+TranslatorContext.registerTranslations('en', {
+  // Photo entity translations
+  'gallerySystemApp.photo.home.title': 'Photos',
+  'gallerySystemApp.photo.home.createLabel': 'Create a new Photo',
+  'gallerySystemApp.photo.home.createOrEditLabel': 'Create or edit a Photo',
+  'gallerySystemApp.photo.delete.question': 'Are you sure you want to delete this Photo?',
+  'gallerySystemApp.photo.title': 'Title',
+  'gallerySystemApp.photo.description': 'Description',
+  'gallerySystemApp.photo.location': 'Location',
+  'gallerySystemApp.photo.keywords': 'Keywords',
+  'gallerySystemApp.photo.uploadDate': 'Upload Date',
+  'gallerySystemApp.photo.captureDate': 'Capture Date',
+  'gallerySystemApp.photo.image': 'Image',
+  'gallerySystemApp.photo.album': 'Album',
+  'gallerySystemApp.photo.tags': 'Tags',
+
+  // Album entity translations
+  'gallerySystemApp.album.home.title': 'Albums',
+  'gallerySystemApp.album.home.createLabel': 'Create a new Album',
+  'gallerySystemApp.album.home.createOrEditLabel': 'Create or edit an Album',
+  'gallerySystemApp.album.delete.question': 'Are you sure you want to delete this Album?',
+  'gallerySystemApp.album.name': 'Name',
+  'gallerySystemApp.album.description': 'Description',
+  'gallerySystemApp.album.createdDate': 'Created Date',
+  'gallerySystemApp.album.photos': 'Photos',
+
+  // Tag entity translations
+  'gallerySystemApp.tag.home.title': 'Tags',
+  'gallerySystemApp.tag.home.createLabel': 'Create a new Tag',
+  'gallerySystemApp.tag.home.createOrEditLabel': 'Create or edit a Tag',
+  'gallerySystemApp.tag.delete.question': 'Are you sure you want to delete this Tag?',
+  'gallerySystemApp.tag.name': 'Name',
+  'gallerySystemApp.tag.color': 'Color',
+
+  // Common entity actions
+  'entity.action.save': 'Save',
+  'entity.action.cancel': 'Cancel',
+  'entity.action.delete': 'Delete',
+  'entity.action.edit': 'Edit',
+  'entity.action.open': 'Open',
+  'entity.action.view': 'View',
+  'entity.action.show': 'Show',
+  'entity.action.back': 'Back',
+  'entity.action.addblob': 'Add blob',
+  'entity.action.addimage': 'Add image',
+
+  // Validation messages
+  'entity.validation.required': 'This field is required.',
+  'entity.validation.minlength': 'This field is required to be at least {{min}} characters.',
+  'entity.validation.maxlength': 'This field cannot be longer than {{max}} characters.',
+  'entity.validation.min': 'This field should be at least {{min}}.',
+  'entity.validation.max': 'This field cannot be more than {{max}}.',
+  'entity.validation.minbytes': 'This field should be at least {{min}} bytes.',
+  'entity.validation.maxbytes': 'This field cannot be more than {{max}} bytes.',
+  'entity.validation.pattern': 'This field should follow pattern for {{pattern}}.',
+  'entity.validation.number': 'This field should be a number.',
+  'entity.validation.datetimelocal': 'This field should be a date and time.',
+  'entity.validation.patternLogin': 'This field can only contain letters, digits and e-mail addresses.',
+
+  // Error messages
+  'error.title': 'Error',
+  'error.http.400': 'Bad request',
+  'error.http.401': 'Unauthorized',
+  'error.http.403': 'Forbidden',
+  'error.http.404': 'Not found',
+  'error.http.500': 'Internal server error',
+  'error.validation': 'Validation error',
+
+  // General UI
+  'global.title': 'Gallery System',
+  'global.browsehappy':
+    'You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/?locale=en">upgrade your browser</a> to improve your experience.',
+  'global.menu.home': 'Home',
+  'global.menu.entities': 'Entities',
+  'global.menu.account': 'Account',
+  'global.menu.admin': 'Administration',
+  'global.menu.language': 'Language',
+  'global.form.username.label': 'Username',
+  'global.form.username.placeholder': 'Your username',
+  'global.form.currentpassword.label': 'Current password',
+  'global.form.currentpassword.placeholder': 'Current password',
+  'global.form.newpassword.label': 'New password',
+  'global.form.newpassword.placeholder': 'New password',
+  'global.form.confirmpassword.label': 'New password confirmation',
+  'global.form.confirmpassword.placeholder': 'Confirm the new password',
+  'global.form.email.label': 'Email',
+  'global.form.email.placeholder': 'Your email',
+  'global.messages.info.authenticated.prefix': 'If you want to ',
+  'global.messages.info.authenticated.link': 'sign in',
+  'global.messages.info.authenticated.suffix':
+    ', you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").',
+  'global.messages.info.register.noaccount': "You don't have an account yet?",
+  'global.messages.info.register.link': 'Register a new account',
+  'global.messages.validate.newpassword.required': 'Your password is required.',
+  'global.messages.validate.newpassword.minlength': 'Your password is required to be at least 4 characters.',
+  'global.messages.validate.newpassword.maxlength': 'Your password cannot be longer than 50 characters.',
+  'global.messages.validate.newpassword.strength': 'Password strength:',
+  'global.messages.validate.confirmpassword.required': 'Your confirmation password is required.',
+  'global.messages.validate.confirmpassword.minlength': 'Your confirmation password is required to be at least 4 characters.',
+  'global.messages.validate.confirmpassword.maxlength': 'Your confirmation password cannot be longer than 50 characters.',
+  'global.messages.validate.email.required': 'Your email is required.',
+  'global.messages.validate.email.invalid': 'Your email is invalid.',
+  'global.messages.validate.email.minlength': 'Your email is required to be at least 5 characters.',
+  'global.messages.validate.email.maxlength': 'Your email cannot be longer than 254 characters.',
+
+  // Footer
+  footer: 'This is your footer',
+
+  // Login
+  'login.title': 'Sign in',
+  'login.form.password': 'Password',
+  'login.form.password.placeholder': 'Your password',
+  'login.form.rememberme': 'Remember me',
+  'login.form.button': 'Sign in',
+  'login.password.forgot': 'Did you forget your password?',
+  'login.form.register': "You don't have an account yet? Register a new account",
+  'login.messages.error.authentication': 'Authentication failed! Please check your credentials and try again.',
+
+  // Password
+  'password.title': 'Password for {username}',
+  'password.form.button': 'Save',
+  'password.messages.error': 'An error has occurred! The password could not be changed.',
+  'password.messages.success': 'Password changed!',
+  'password.messages.validate.newpassword.required': 'Your password is required.',
+  'password.messages.validate.newpassword.minlength': 'Your password is required to be at least 4 characters.',
+  'password.messages.validate.newpassword.maxlength': 'Your password cannot be longer than 50 characters.',
+  'password.messages.validate.newpassword.strength': 'Password strength:',
+  'password.messages.validate.confirmpassword.required': 'Your confirmation password is required.',
+  'password.messages.validate.confirmpassword.minlength': 'Your confirmation password is required to be at least 4 characters.',
+  'password.messages.validate.confirmpassword.maxlength': 'Your confirmation password cannot be longer than 50 characters.',
+
+  // Register
+  'register.title': 'Registration',
+  'register.form.button': 'Register',
+  'register.messages.validate.login.required': 'Your username is required.',
+  'register.messages.validate.login.minlength': 'Your username is required to be at least 1 character.',
+  'register.messages.validate.login.maxlength': 'Your username cannot be longer than 50 characters.',
+  'register.messages.validate.login.pattern': 'Your username can only contain lower-case letters and digits.',
+  'register.messages.success': 'Registration saved! Please check your email for confirmation.',
+  'register.messages.error.fail': 'Registration failed! Please try again later.',
+  'register.messages.error.userexists': 'Login name already registered! Please choose another one.',
+  'register.messages.error.emailexists': 'Email is already in use! Please choose another one.',
+
+  // Settings
+  'settings.title': 'User settings for {username}',
+  'settings.form.firstname': 'First Name',
+  'settings.form.firstname.placeholder': 'Your first name',
+  'settings.form.lastname': 'Last Name',
+  'settings.form.lastname.placeholder': 'Your last name',
+  'settings.form.language': 'Language',
+  'settings.form.button': 'Save',
+  'settings.messages.error.fail': 'An error has occurred! Settings could not be saved.',
+  'settings.messages.error.emailexists': 'Email is already in use! Please choose another one.',
+  'settings.messages.success': 'Settings saved!',
+  'settings.messages.validate.firstname.required': 'Your first name is required.',
+  'settings.messages.validate.firstname.minlength': 'Your first name is required to be at least 1 character.',
+  'settings.messages.validate.firstname.maxlength': 'Your first name cannot be longer than 50 characters.',
+  'settings.messages.validate.lastname.required': 'Your last name is required.',
+  'settings.messages.validate.lastname.minlength': 'Your last name is required to be at least 1 character.',
+  'settings.messages.validate.lastname.maxlength': 'Your last name cannot be longer than 50 characters.',
+
+  // Activate
+  'activate.title': 'Activation',
+  'activate.messages.success': 'Your user account has been activated. Please sign in.',
+  'activate.messages.error': 'Your user account could not be activated. Please use the registration form to sign up.',
+
+  // User management
+  'userManagement.home.title': 'Users',
+  'userManagement.home.createLabel': 'Create a new user',
+  'userManagement.home.createOrEditLabel': 'Create or edit a user',
+  'userManagement.delete.question': 'Are you sure you want to delete user {login}?',
+  'userManagement.detail.title': 'User',
+  'userManagement.login': 'Login',
+  'userManagement.firstName': 'First name',
+  'userManagement.lastName': 'Last name',
+  'userManagement.email': 'Email',
+  'userManagement.activated': 'Activated',
+  'userManagement.deactivated': 'Deactivated',
+  'userManagement.profiles': 'Profiles',
+  'userManagement.langKey': 'Language',
+  'userManagement.createdBy': 'Created by',
+  'userManagement.createdDate': 'Created date',
+  'userManagement.lastModifiedBy': 'Modified by',
+  'userManagement.lastModifiedDate': 'Modified date',
+
+  // Common buttons and labels
+  'entity.delete.title': 'Confirm delete operation',
+  'entity.details.field': 'Field',
+  'entity.details.value': 'Value',
+  'entity.delete.button': 'Delete',
+  'entity.action.clearblob': 'Clear',
+  'entity.filters.noOption': 'No option',
+  'entity.filters.byText': 'By text',
+  'entity.home.refreshListLabel': 'Refresh list',
+  'entity.home.createLabel': 'Create new',
+  'entity.home.createOrEditLabel': 'Create or edit',
+  'entity.home.confirmDelete': 'Confirm delete operation',
+  'entity.home.notFound': 'No items found',
+});
